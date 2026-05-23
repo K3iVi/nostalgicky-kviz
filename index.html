@@ -718,7 +718,7 @@
     box-shadow: 0 5px 40px rgba(255, 62, 165, 0.7);
   }
 
-  /* --- Odpočet ve vyhodnocení (5s) --- */
+  /* --- Odpočet ve vyhodnocení (3s) --- */
   .countdown-block {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -1172,7 +1172,7 @@
       margin-bottom: 2rem;
     }
 
-    /* --- 5s odpočet --- */
+    /* --- 3s odpočet --- */
     .countdown-block {
       margin-bottom: 1.8rem;
     }
@@ -2254,12 +2254,12 @@ let state = {
   categoryRunning: {},                      // { playerId: skore }
   reviewMarks: {},                          // { playerId: null | 'correct' | 'wrong' | 'skip' }
   reviewSubPhase: 'reminder',
-  reviewCountdown: 5,
+  reviewCountdown: 3,
   reviewTimerId: null,
   questionCount: 8                          // počet běžných otázek v sadě (bonus se přidává navíc); volitelné 3/5/8
 };
 
-const COUNTDOWN_SECONDS = 5;
+const COUNTDOWN_SECONDS = 3;
 
 /* =================================================================
    POMOCNÉ FUNKCE
@@ -2583,7 +2583,7 @@ function renderCollectPhase(body, variant, isBonus) {
 
 /* ----- Fáze 2: VYHODNOCENÍ
    Sub-fáze:
-   - 'reminder' = zopakuje otázku, běží 5s odpočet, pak se odhalí odpověď
+   - 'reminder' = zopakuje otázku, běží 3s odpočet, pak se odhalí odpověď
    - 'reveal'   = ukáže odpověď + komentář + sloupce Petr/Martina pro označení
    --------------------------------------------------------------------------- */
 function renderReviewPhase(body, variant, isBonus) {
@@ -2746,7 +2746,7 @@ function advanceReview() {
   }
 }
 
-/* ----- Odpočet 5s mezi zopakováním otázky a odhalením odpovědi ----- */
+/* ----- Odpočet 3s mezi zopakováním otázky a odhalením odpovědi ----- */
 function enterReviewReminder() {
   clearReviewTimer();
   state.reviewSubPhase = 'reminder';
