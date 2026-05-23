@@ -486,6 +486,76 @@
   }
 
   /* ============================
+     VARIANT PICKER (výběr sady)
+     ============================ */
+  .picker-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 2vh;
+  }
+  .picker-back {
+    margin-bottom: 1.8rem;
+  }
+  .picker-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    margin-bottom: 0.5rem;
+    letter-spacing: 1.5px;
+    line-height: 1.4;
+    background: linear-gradient(90deg, #ff3ea5, #00e5d4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255, 62, 165, 0.3);
+  }
+  .picker-subtitle {
+    font-family: 'Space Grotesk', sans-serif;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+  }
+  .variant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .variant-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.8rem;
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .variant-btn:hover {
+    background: rgba(255, 62, 165, 0.15);
+    border-color: #ff3ea5;
+    transform: translateX(5px);
+    box-shadow: 0 0 20px rgba(255, 62, 165, 0.25);
+  }
+  .variant-btn-num {
+    font-family: 'VT323', monospace;
+    color: #00e5d4;
+    font-size: 1.6rem;
+    font-weight: bold;
+    min-width: 1.5em;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .variant-btn-name {
+    font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+    font-weight: 600;
+  }
+
+  /* ============================
      SETUP HRÁČŮ (úvodní obrazovka)
      ============================ */
   .setup-wrap {
@@ -1242,6 +1312,20 @@
   </div>
 
   <!-- ============================
+       VARIANT PICKER (výběr sady otázek po kliknutí na kategorii)
+       ============================ -->
+  <div id="screen-variant-picker" class="screen">
+    <div class="picker-wrap">
+      <button class="back-btn picker-back" onclick="goHome()">← Zpět na výběr kategorie</button>
+      <h2 class="picker-title">
+        <span id="picker-icon"></span>&nbsp;<span id="picker-cat-name"></span>
+      </h2>
+      <p class="picker-subtitle">Vyber sadu otázek</p>
+      <div class="variant-list" id="variant-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================
        HOME SCREEN
        ============================ -->
   <div id="screen-home" class="screen">
@@ -1302,210 +1386,304 @@ const CATEGORIES = [
     id: 'hudba',
     name: 'Hudba a rádio',
     icon: '🎵',
-    questions: [
-      { q: 'Která britská dívčí skupina měla v roce 1996 hit "Wannabe"?',
-        a: 'Spice Girls',
-        c: 'Girl power! Sporty, Scary, Baby, Ginger a Posh — pětice, která ovládla planetu rychleji než vy domácí úkoly.' },
-      { q: 'Jak se jmenuje hlavní píseň Celine Dion z filmu Titanic (1997)?',
-        a: 'My Heart Will Go On',
-        c: 'Píseň, kterou jste příštích pět let slyšeli v každém rádiu, supermarketu i autě. Až to bolelo.' },
-      { q: 'Která americká kapela vydala v roce 1991 album Nevermind se slavnou písní "Smells Like Teen Spirit"?',
-        a: 'Nirvana',
-        c: 'Grunge přišel, flanelové košile spadly z tvého taťky na tebe a Kurt Cobain se stal nesmrtelným.' },
-      { q: 'Která česká skupina v roce 1995 zpívala "Holky z naší školky"?',
-        a: 'Maxim Turbulenc',
-        c: 'Diskotéka na každém táboře. Ten dechový riff vám v hlavě uvízne i 30 let poté — ať chcete nebo ne.' },
-      { q: 'Jak se jmenoval debutový singl Britney Spears z roku 1998 (školní uniforma, blond copánky)?',
-        a: '...Baby One More Time',
-        c: 'Začátek éry, ze které jsme se možná nikdy úplně nevzpamatovali. A ten videoklip — chudák tělocvikář.' },
-      { q: 'Která britská elektronická kapela natočila v roce 1997 kontroverzní klip "Smack My Bitch Up"?',
-        a: 'The Prodigy',
-        c: 'Klip, který v televizi nikdy nepustili před desátou. A když jo, tak omylem — a druhý den byl skandál v Blesku.' },
-      { q: 'Jak se jmenuje frontman a zpěvák české rockové skupiny Lucie?',
-        a: 'David Koller',
-        c: 'Černí andělé, Medvídek, Šrouby do hlavy. Generace, která ho poslouchá pořád, byť už má hypotéku a dvě děti.' },
-      { q: 'Jak se jmenují bratři, kteří vedli britskou skupinu Oasis (známí svou věčnou rvačkou)?',
-        a: 'Liam a Noel Gallagher',
-        c: 'Celé devadesátky se nesnášeli. Vlastně se nesnášejí dodnes — ale i tak spolu udělali turné v roce 2025.' }
-    ],
-    bonus: { q: 'Jak se jmenoval španělský taneční duet, který v roce 1996 dobyl celý svět hitem "Macarena" (a všichni se po něm učili tu nešťastnou taneční choreografii)?',
-        a: 'Los del Río',
-        c: 'Antonio Romero a Rafael Ruiz. Tanec, který znal každý pubescent, ale skoro nikdo si neuměl pamatovat, jak se ti dva pánové ve smokingu vlastně jmenovali.' }
+    variants: [
+    {
+      name: 'Mezinárodní klasika 90s',
+      questions: [
+        { q: 'Která britská dívčí skupina měla v roce 1996 hit "Wannabe"?', a: 'Spice Girls', c: 'Girl power! Sporty, Scary, Baby, Ginger a Posh — pětice, která ovládla planetu rychleji než vy domácí úkoly.' },
+        { q: 'Jak se jmenuje hlavní píseň Celine Dion z filmu Titanic (1997)?', a: 'My Heart Will Go On', c: 'Píseň, kterou jste příštích pět let slyšeli v každém rádiu, supermarketu i autě. Až to bolelo.' },
+        { q: 'Která americká kapela vydala v roce 1991 album Nevermind se slavnou písní "Smells Like Teen Spirit"?', a: 'Nirvana', c: 'Grunge přišel, flanelové košile spadly z tvého taťky na tebe a Kurt Cobain se stal nesmrtelným.' },
+        { q: 'Která česká skupina v roce 1995 zpívala "Holky z naší školky"?', a: 'Maxim Turbulenc', c: 'Diskotéka na každém táboře. Ten dechový riff vám v hlavě uvízne i 30 let poté — ať chcete nebo ne.' },
+        { q: 'Jak se jmenoval debutový singl Britney Spears z roku 1998 (školní uniforma, blond copánky)?', a: '...Baby One More Time', c: 'Začátek éry, ze které jsme se možná nikdy úplně nevzpamatovali. A ten videoklip — chudák tělocvikář.' },
+        { q: 'Která britská elektronická kapela natočila v roce 1997 kontroverzní klip "Smack My Bitch Up"?', a: 'The Prodigy', c: 'Klip, který v televizi nikdy nepustili před desátou. A když jo, tak omylem — a druhý den byl skandál v Blesku.' },
+        { q: 'Jak se jmenuje frontman a zpěvák české rockové skupiny Lucie?', a: 'David Koller', c: 'Černí andělé, Medvídek, Šrouby do hlavy. Generace, která ho poslouchá pořád, byť už má hypotéku a dvě děti.' },
+        { q: 'Jak se jmenují bratři, kteří vedli britskou skupinu Oasis (známí svou věčnou rvačkou)?', a: 'Liam a Noel Gallagher', c: 'Celé devadesátky se nesnášeli. Vlastně se nesnášejí dodnes — ale i tak spolu udělali turné v roce 2025.' }
+      ],
+      bonus: { q: 'Jak se jmenoval španělský taneční duet, který v roce 1996 dobyl celý svět hitem "Macarena"?', a: 'Los del Río', c: 'Antonio Romero a Rafael Ruiz. Tanec, který znal každý pubescent, ale skoro nikdo si neuměl pamatovat, jak se ti dva pánové ve smokingu vlastně jmenovali.' }
+    },
+    {
+      name: 'České hity 90s/00s',
+      questions: [
+        { q: 'Která česká zpěvačka má hit "Trezor" a říká se jí "česká Madonna"?', a: 'Lucie Bílá', c: 'Tmavé vlasy, divadelní hlas, kostýmy. Zpívala tak nahlas, že si u ní v zákulisí zacpávali uši.' },
+        { q: 'Která česká rocková skupina založená v 60. letech má frontmana Petra Jandu a hit "Dej mi víc své lásky"?', a: 'Olympic', c: 'Janda na pódiu vypadá pořád stejně jako v 70. letech. Vlasy, kytara, postoj — všechno legendární.' },
+        { q: 'Která česká rocková kapela z Teplic má frontmana Pepu Vojtka a hit "Pohoda"?', a: 'Kabát', c: 'Burlák. Šedý chleba. Pohoda. Hospodská poezie postavená na riffu. Stadiony plný.' },
+        { q: 'Jak se jmenoval česky zpívající "Mistr" se znělkou Včelky Máji, který zemřel v roce 2019?', a: 'Karel Gott', c: 'Vlasy jako z reklamy, hlas jako z opery, věcný kontent: Karel Gott. Pohřeb sledoval celý národ.' },
+        { q: 'Jak se jmenuje česká kapela se zpěvákem Michalem Malátným, hity "Vinárna" a "Tabáček"?', a: 'Chinaski', c: 'Vznikli v Plzni 1987. Začínali jako Charlieho rockové matriky a postupně se posunuli k popu, ke kterému si zpíváte i v autě.' },
+        { q: 'Jak se jmenuje kontroverzní český zpěvák a bývalý člen skupiny Orlík (Tři sestry frakce), hit "Vlajka"?', a: 'Daniel Landa', c: 'Skinhead minulost, dabing v animácích, motorky, automobilové závody. Univerzální skandál v jednom muži.' },
+        { q: 'Jak se jmenoval slavný český písničkář, autor "Bratříčku, zavírej vrátka", který zemřel v Mnichově v roce 1994?', a: 'Karel Kryl', c: 'Hlas svědomí Pražského jara, kterého komunisti vyhnali do exilu, a kterého demokracie znovu nedokázala unést.' },
+        { q: 'Jak se jmenuje slavný český rapper a člen skupiny PSH, který je také grafickým designérem a publicistou?', a: 'Vladimír 518', c: 'Veterán českého hip-hopu. Knihy, kniha o pražských zdech, časopis. Když řeknete "underground", on je tam.' }
+      ],
+      bonus: { q: 'Jak se jmenovala česká dívčí skupina (pět členek, předchůdkyně Holki) z 90s, která měla hit "Klobouk dolů"?', a: 'Holki', c: 'České Spice Girls — ale s odbornější fyzičkou. Roztančily Sazka Arenu i diskotéky v krajských městech.' }
+    }
+    ]
   },
 
   {
     id: 'tv',
     name: 'TV a reklamy',
     icon: '📺',
-    questions: [
-      { q: 'Jak se jmenoval americký sitcom (1994–2004) o šestici přátel v New Yorku: Ross, Rachel, Monica, Chandler, Joey a Phoebe?',
-        a: 'Přátelé (Friends)',
-        c: 'Maratón na Comedy Central. Každý díl znáte nazpaměť, a stejně se zasmějete potřetí, počtvrté, popáté.' },
-      { q: 'Který nápoj proslavila reklama se sloganem "Když ji miluješ, není co řešit"?',
-        a: 'Kofola',
-        c: 'Vánoční reklama s prasátkem ve sněhu. Vánoce v Česku bez ní jednoduše nejdou.' },
-      { q: 'V kterém roce začala vysílat TV Nova?',
-        a: '1994',
-        c: 'Konec nudy České televize. Začátek Vlastimila Bedrny, Esemesky a Volejte řediteli.' },
-      { q: 'Jak se jmenoval americký sitcom o chlupatém oranžovém mimozemšťanovi z planety Melmac, který pořád chtěl sníst rodinnou kočku?',
-        a: 'ALF',
-        c: 'Originální jméno: Gordon Shumway. Zkratka "Alien Life Form". Kočka Lucky se protrpěla celou sérií — ale snědena nakonec nebyla. Bohužel.' },
-      { q: 'Jak se jmenoval seriál FBI agentů Foxe Muldera a Dany Scullyové, kteří řešili paranormální případy?',
-        a: 'Akta X (The X-Files)',
-        c: 'Pravda je tam venku. A stejně tak vaše dětství, které jste strávili s baterkou pod peřinou.' },
-      { q: 'Jak se jmenovalo mluvící černé auto Davida Hasselhoffa v seriálu Knight Rider?',
-        a: 'KITT',
-        c: 'Černý Pontiac Firebird s pulsující rudou diodou. Každý kluk chtěl mít takový — místo toho měl Škodu 105.' },
-      { q: 'Jak se jmenoval generální ředitel TV Nova v 90s, který uváděl pořad "Volejte řediteli"?',
-        a: 'Vladimír Železný',
-        c: 'Pán v obleku, který odpovídal divákům. A pak ho Lauder vyhodil — bylo z toho mezinárodní arbitrážní řízení za miliardy.' },
-      { q: 'Jak se jmenuje slavný mafiánský seriál HBO z roku 1999 o italsko-americké rodině z New Jersey?',
-        a: 'Rodina Sopránů (The Sopranos)',
-        c: 'Tony Soprano. Psychoterapie a poprava na jedné fakuře. Seriál, který definoval, jak vypadá "prestige TV".' }
-    ],
-    bonus: { q: 'Jak se jmenovala kultovní animovaná série z konce 80. a 90. let o čtyřech bojových hrdinech-želvách, které žijí v newyorských kanálech a milují pizzu?',
-        a: 'Želvy Ninja (TMNT)',
-        c: 'Leonardo, Donatello, Raphael a Michelangelo — pojmenovaní po renesančních umělcích. Krysí mistr Splinter, padouch Shredder. Pizza s ananasem. Devadesátky v jedné kreslené show.' }
+    variants: [
+    {
+      name: 'Mezinárodní seriály 90s',
+      questions: [
+        { q: 'Jak se jmenoval americký sitcom (1994–2004) o šestici přátel v New Yorku: Ross, Rachel, Monica, Chandler, Joey a Phoebe?', a: 'Přátelé (Friends)', c: 'Maratón na Comedy Central. Každý díl znáte nazpaměť, a stejně se zasmějete potřetí, počtvrté, popáté.' },
+        { q: 'Který nápoj proslavila reklama se sloganem "Když ji miluješ, není co řešit"?', a: 'Kofola', c: 'Vánoční reklama s prasátkem ve sněhu. Vánoce v Česku bez ní jednoduše nejdou.' },
+        { q: 'V kterém roce začala vysílat TV Nova?', a: '1994', c: 'Konec nudy České televize. Začátek Vlastimila Bedrny, Esemesky a Volejte řediteli.' },
+        { q: 'Jak se jmenoval americký sitcom o chlupatém oranžovém mimozemšťanovi z planety Melmac, který pořád chtěl sníst rodinnou kočku?', a: 'ALF', c: 'Originální jméno: Gordon Shumway. Zkratka "Alien Life Form". Kočka Lucky se protrpěla celou sérií — ale snědena nakonec nebyla. Bohužel.' },
+        { q: 'Jak se jmenoval seriál FBI agentů Foxe Muldera a Dany Scullyové, kteří řešili paranormální případy?', a: 'Akta X (The X-Files)', c: 'Pravda je tam venku. A stejně tak vaše dětství, které jste strávili s baterkou pod peřinou.' },
+        { q: 'Jak se jmenovalo mluvící černé auto Davida Hasselhoffa v seriálu Knight Rider?', a: 'KITT', c: 'Černý Pontiac Firebird s pulsující rudou diodou. Každý kluk chtěl mít takový — místo toho měl Škodu 105.' },
+        { q: 'Jak se jmenoval generální ředitel TV Nova v 90s, který uváděl pořad "Volejte řediteli"?', a: 'Vladimír Železný', c: 'Pán v obleku, který odpovídal divákům. A pak ho Lauder vyhodil — bylo z toho mezinárodní arbitrážní řízení za miliardy.' },
+        { q: 'Jak se jmenuje slavný mafiánský seriál HBO z roku 1999 o italsko-americké rodině z New Jersey?', a: 'Rodina Sopránů (The Sopranos)', c: 'Tony Soprano. Psychoterapie a poprava na jedné fakuře. Seriál, který definoval, jak vypadá "prestige TV".' }
+      ],
+      bonus: { q: 'Jak se jmenovala kultovní animovaná série z konce 80. a 90. let o čtyřech bojových hrdinech-želvách, které žijí v newyorských kanálech a milují pizzu?', a: 'Želvy Ninja (TMNT)', c: 'Leonardo, Donatello, Raphael a Michelangelo. Krysí mistr Splinter, padouch Shredder. Pizza s ananasem. Devadesátky v jedné show.' }
+    },
+    {
+      name: 'České seriály a moderátoři',
+      questions: [
+        { q: 'Jak se jmenoval rodinný seriál TV Nova (od 1995) o životě aristokratické rodiny Stránských na zámku Štěpánov?', a: 'Život na zámku', c: 'Mýdlová opera, ze které se stal evergreen. 14 sezón. Půlka Česka u toho po obědě usnula, druhá poslouchala.' },
+        { q: 'Jak se jmenoval sitkom TV Nova z 90s odehrávající se v plzeňské hospodě U Stárků?', a: 'Hospoda', c: 'Pavlásek, Polívka, Donutil. Hospodská poezie před vlnou kabelových mafií. Dnes by je nikdo nepustil do prime-timu.' },
+        { q: 'Jak se jmenovala česká kreslená pohádka, kde dva králíci žijí v klobouku kouzelníka?', a: 'Bob a Bobek — králíci z klobouku', c: 'Z klobouku se vždy něco vylezlo. Hudba od Marca Ebena. Generační kapsa nostalgie.' },
+        { q: 'Jak se jmenovala česká reality show TV Nova z roku 2005 — první svého druhu v ČR?', a: 'Big Brother', c: 'Lidi v domě bez vnějšího kontaktu. Reality show, kterou národ sledoval, a pak se za to skoro styděl. Skoro.' },
+        { q: 'Jak se jmenuje slavný česky moderátor talk show, syn herce Jana Krause staršího — provokuje hosty od 00s?', a: 'Jan Kraus', c: 'Špičky, narážky, hosté v rozpacích. Talk show, kde hostitel říká věci, které byste si v životě netroufli.' },
+        { q: 'Jak se jmenovala česká humorná show TV Nova konce 90s s Karlem Šípem a Vladimírem Hronem, kde se převlékali za historické osobnosti?', a: 'Tele tele', c: 'Tudum, tudum. Hron jako jamesbond, šíp jako tělocvikář. Sketches, parodie, špatný make-up — a my jsme to milovali.' },
+        { q: 'Jak se jmenovala česká vědomostní soutěž TV Nova 90s — česká verze americké "Jeopardy!"?', a: 'Riskuj!', c: '"Co je..." Odpovědi formou otázky. Aleš Cibulka, později jiní moderátoři. Hra, u které jste se ptali rodičů na věci, které jste nikdy nepoužili.' },
+        { q: 'Jak se jmenoval první moderátor české verze pořadu "Chcete být milionářem?" — herec a komik?', a: 'Vladimír Čech', c: 'Pán v obleku se širokým úsměvem. "Je to vaše poslední slovo?" stalo se hláškou, kterou jste opakovali doma u nedělního oběda.' }
+      ],
+      bonus: { q: 'Jak se jmenoval slavný česky animovaný seriál Studia Bratři v triku o malém chlapci, který objevuje svět matematiky a zvířátek (s liškou jako průvodcem)?', a: 'Méďové / Mach a Šebestová', c: 'Mach, Šebestová a Jonatán pes. Plus sluchátko, kterým slyšeli, co kdo říká. Konspirační teorie pro děti z 80s a 90s.' }
+    }
+    ]
   },
 
   {
     id: 'tech',
     name: 'Tech a internet',
     icon: '💻',
-    questions: [
-      { q: 'Jaký byl nejlegendárnější model mobilního telefonu Nokia z přelomu tisíciletí (s hadem a 7denní výdrží baterie)?',
-        a: 'Nokia 3310',
-        c: 'Nezničitelný cihla. Spadla na podlahu — podlaha praskla. Mobil pokračoval v hraní hada.' },
-      { q: 'Jak se jmenuje kultovní arkádová hra z roku 1980, kde žlutá kulatá postavička sbírá tečky v bludišti a utíká před čtyřmi duchy jménem Blinky, Pinky, Inky a Clyde?',
-        a: 'Pac-Man (Pacman)',
-        c: 'Japonská Namco, 1980. V 90s jsme to hráli na PC, mobilech i automatech v každé herně. A vždycky končili tím, že nás chytl ten růžový. Wakawakawaka.' },
-      { q: 'Jaký byl nejpopulárnější instant messenger v 90s, jehož uživatelé měli pětimístné až devítimístné číslo (UIN)?',
-        a: 'ICQ',
-        c: '"Uh-oh!" Jediný zvuk, který vám zrychlil tep víc než zazvonění mobilu od holky/kluka, kterého jste měli rádi.' },
-      { q: 'Jaká česká firma provozuje od 90s nejpopulárnější český vyhledávač a emailovou službu?',
-        a: 'Seznam.cz',
-        c: 'Ivo Lukačovič a jeho seznam. Před Googlem jsme vážně hledali přes Seznam — a docela to fungovalo.' },
-      { q: 'V kterém roce Mark Zuckerberg založil Facebook?',
-        a: '2004',
-        c: 'Začalo to v Harvardském koleji jako "Facemash". Skončilo to tím, že vám teta sdílí konspirace o GMO a chemtrails.' },
-      { q: 'Jaký webový prohlížeč Microsoft přibalil k Windows a měl modré písmeno "e" jako ikonu?',
-        a: 'Internet Explorer',
-        c: 'Pomalý jako melasa, ale kdybyste ho odinstalovali, Windows by se sesypalo. A používali jste ho hlavně k tomu, abyste si stáhli Firefox.' },
-      { q: 'Jak se jmenovala česká stránka v 00s, kde si lidé navzájem hodnotili fotky podle atraktivity (palec nahoru / dolů)?',
-        a: 'Líbímseti.cz',
-        c: 'Předchůdce Tinderu, jen bez algoritmu. A bez vkusu. A bez moderace. Ach, ten zlatý necenzurovaný internet.' },
-      { q: 'Kteří dva studenti Stanfordu založili v roce 1998 Google?',
-        a: 'Larry Page a Sergey Brin',
-        c: 'Začínali v garáži v Menlo Parku. Dnes pravděpodobně vlastní víc dat o vás než vaše vlastní rodina.' }
-    ],
-    bonus: { q: 'Co přesně psalo v úplně první SMS zprávě v historii, kterou poslal britský inženýr Neil Papworth 3. prosince 1992?',
-        a: 'Merry Christmas',
-        c: 'Vánoční přání 21 dní před Vánoci. Papworth ji posílal z PC, ne z mobilu — mobily tehdy SMS ještě neuměly přijímat ani odesílat. Kdo by tušil, že to bude příští 30 let main způsob komunikace.' }
+    variants: [
+    {
+      name: 'Klasiky internetu a mobilů',
+      questions: [
+        { q: 'Jaký byl nejlegendárnější model mobilního telefonu Nokia z přelomu tisíciletí (s hadem a 7denní výdrží baterie)?', a: 'Nokia 3310', c: 'Nezničitelný cihla. Spadla na podlahu — podlaha praskla. Mobil pokračoval v hraní hada.' },
+        { q: 'Jak se jmenuje kultovní arkádová hra z roku 1980, kde žlutá kulatá postavička sbírá tečky v bludišti a utíká před čtyřmi duchy?', a: 'Pac-Man (Pacman)', c: 'Japonská Namco, 1980. V 90s jsme to hráli na PC, mobilech i automatech. A vždycky končili tím, že nás chytl ten růžový. Wakawakawaka.' },
+        { q: 'Jaký byl nejpopulárnější instant messenger v 90s, jehož uživatelé měli pětimístné až devítimístné číslo (UIN)?', a: 'ICQ', c: '"Uh-oh!" Jediný zvuk, který vám zrychlil tep víc než zazvonění mobilu od holky/kluka, kterého jste měli rádi.' },
+        { q: 'Jaká česká firma provozuje od 90s nejpopulárnější český vyhledávač a emailovou službu?', a: 'Seznam.cz', c: 'Ivo Lukačovič a jeho seznam. Před Googlem jsme vážně hledali přes Seznam — a docela to fungovalo.' },
+        { q: 'V kterém roce Mark Zuckerberg založil Facebook?', a: '2004', c: 'Začalo to v Harvardském koleji jako "Facemash". Skončilo to tím, že vám teta sdílí konspirace o GMO a chemtrails.' },
+        { q: 'Jaký webový prohlížeč Microsoft přibalil k Windows a měl modré písmeno "e" jako ikonu?', a: 'Internet Explorer', c: 'Pomalý jako melasa, ale kdybyste ho odinstalovali, Windows by se sesypalo. A používali jste ho hlavně k tomu, abyste si stáhli Firefox.' },
+        { q: 'Jak se jmenovala česká stránka v 00s, kde si lidé navzájem hodnotili fotky podle atraktivity?', a: 'Líbímseti.cz', c: 'Předchůdce Tinderu, jen bez algoritmu. A bez vkusu. A bez moderace. Ach, ten zlatý necenzurovaný internet.' },
+        { q: 'Kteří dva studenti Stanfordu založili v roce 1998 Google?', a: 'Larry Page a Sergey Brin', c: 'Začínali v garáži v Menlo Parku. Dnes pravděpodobně vlastní víc dat o vás než vaše vlastní rodina.' }
+      ],
+      bonus: { q: 'Co přesně psalo v úplně první SMS zprávě v historii, kterou poslal britský inženýr Neil Papworth 3. prosince 1992?', a: 'Merry Christmas', c: 'Vánoční přání 21 dní před Vánoci. Papworth ji posílal z PC, ne z mobilu — mobily tehdy SMS ještě neuměly přijímat. Kdo by tušil, že to bude příští 30 let main způsob komunikace.' }
+    },
+    {
+      name: 'Mobily, operátoři a komunikace',
+      questions: [
+        { q: 'Jak se jmenoval první mobilní operátor v České republice (založen v roce 1991)?', a: 'Eurotel', c: 'První mobilní hovor v Česku z auta na poli. Cena minuty stála jako týdenní oběd v jídelně. A přesto si je všichni přáli.' },
+        { q: 'Jak se jmenoval druhý mobilní operátor v ČR (1996), předchůdce dnešního T-Mobile?', a: 'Paegas', c: 'Žluté logo, žluté budky, žluté antény. Pak se přejmenoval na T-Mobile a všechno zfialovělo. Marketingové štěstí.' },
+        { q: 'Jak se jmenoval třetí mobilní operátor v ČR, který přišel v roce 2000 (předchůdce Vodafone)?', a: 'Oskar', c: 'Levné tarify, šokující ceny SMS. Pak Vodafone, červené reklamy s kamarádkou Maruš. Generace, která ho zná, ho dodnes říká "Oskar".' },
+        { q: 'Jak se jmenoval iconický skládací mobil Motorola z roku 1996 — první mainstreamový "flip phone"?', a: 'Motorola StarTAC', c: 'Cvak při zavírání, hvězdné, doslova. Vážil 88 gramů a stál víc než průměrný plat. Nosil ho každý burzián v Praze.' },
+        { q: 'Jak se jmenovala Nokia z konce 90s s odnímatelnými barevnými kryty (xpress-on covers), předchůdce 3310?', a: 'Nokia 5110', c: 'Dva typy lidí: ti, co kupovali kryt fialový s květinkami, a ti, co psí oranžový jako pruh. A žádný z nich je nepřipínali správně.' },
+        { q: 'Jak se jmenoval prvni komunikátor s integrovaným IM klientem v 00s, který používali středoškoláci k chatu po škole — Microsoft Messenger?', a: 'MSN Messenger (Windows Live Messenger)', c: 'Třepetání oknem, "nudge" pošťouchnutí, displej fotky kamarádů. Žije v naší vzpomínce. RIP od 2013.' },
+        { q: 'Jak se jmenoval populární VoIP software z roku 2003, který používali všichni studenti na hovory zdarma — od dvou estonských vývojářů?', a: 'Skype', c: 'Modrá ikona, ten neuvěřitelný zvuk vyzvánění. Bratři Friis a Zennström ho prodali Microsoftu za 8.5 miliardy. A pak ho Microsoft zabil.' },
+        { q: 'Jak se jmenoval první "business" smartphone s plnohodnotnou malou QWERTY klávesnicí, kterým ovládali email manažeři v 00s?', a: 'BlackBerry', c: 'Černý, vážný, s LED diodou na vrcholu. Manažer s BlackBerrym byl důležitý. iPhone přišel a všechno smetl.' }
+      ],
+      bonus: { q: 'V kterém roce přesně přišel oficiální prodej iPhone do České republiky (přes T-Mobile)?', a: '2008', c: 'Sedm měsíců po světovém debutu (leden 2007). První Češi si ho ale dovezli z USA dřív a unlocknuli ho přes hacky. iPhone "krade signál" — pamatujete?' }
+    }
+    ]
   },
 
   {
     id: 'jidlo',
     name: 'Jídlo, pití, značky',
     icon: '🍫',
-    questions: [
-      { q: 'Která čokoládová tyčinka s arašídy a karamelem má reklamní slogan "Když máš hlad, nejsi to ty"?',
-        a: 'Snickers',
-        c: 'Reklamy s celebritami, které se po hladu mění zpět v sebe. Až bys řekl, že je to o jídle.' },
-      { q: 'Jak se jmenovaly nejoblíbenější žvýkačky 90s, prodávané v malých modrobílých papírcích a s nasbíranými obrázky (Pokémoni, Jurský park)?',
-        a: 'Pedro',
-        c: 'Hvězdy, kapsy plné papírků, lepicí obrázky na lavici. A taky první výprask za žvýkání ve škole.' },
-      { q: 'Jak se jmenoval prášek na rozpouštění ve vodě v 90s — přicházel v různých příchutích (pomeranč, jahoda) a barvil jazyk?',
-        a: 'Yupi (Jupík)',
-        c: 'Cukr a éčka v jednom sáčku. Maminky to nesnášely, vy jste to milovali. Plastová lahev s tím trénovala vaši imunitu.' },
-      { q: 'Jak se jmenuje legendární česká čokoláda v hnědozlatém obalu se zoubkováním po stranách, s rozinkami, oříšky a kousky kakaa?',
-        a: 'Studentská pečeť',
-        c: 'Voda, ořechy, hrozinky, mléko, kakao... A pocit, že jíte něco intelektuálnějšího než obyčejnou čokoládu.' },
-      { q: 'Jak se jmenoval pomerančový nápoj v plastovém sáčku se slámkou — nesoucí jméno italského ostrova?',
-        a: 'Capri Sonne',
-        c: 'Píchnout slámku jste museli přesně, jinak se v něm utopila a museli jste pít odshora. A nedalo se rozpít na později.' },
-      { q: 'Jak se jmenovaly malé bonbóny v různých barevných příchutích, prodávané v průhledných sáčcích pod značkou Nestlé?',
-        a: 'Bonpari',
-        c: 'Žlutá citron, červená malina, zelená jablko. A vždycky jste skončili tím, že jste hledali tu poslední růžovou na dně sáčku.' },
-      { q: 'V kterém přesně roce otevřel první McDonald\'s v Česku?',
-        a: '1992',
-        c: 'Fronty kolem celého bloku. Cheeseburger byla luxusní událost. Vaši rodiče vám ho dovolili tak jednou za měsíc.' },
-      { q: 'Jaký byl ikonický český kakaový nápojový prášek z 90s, který se sypal do mléka a prodával se v charakteristickém zelenobílém papírovém sáčku?',
-        a: 'Granko',
-        c: 'Lžička do mléka, zamíchat — a malí Češi 90s měli energii do tělocviku. Reklamy v televizi s dětmi pijícími Granko z hrníčků s vlnitými okraji. Klasika z Modřan od Orionu.' }
-    ],
-    bonus: { q: 'V jaké pražské ulici otevřel první McDonald\'s v České republice?',
-        a: 'Vodičkova',
-        c: 'Vodičkova 32, Praha 1. Žije dodnes. A to už jste si tam podle všeho objednali nejmíň 50 cheeseburgerů za život.' }
+    variants: [
+    {
+      name: 'Sladkosti a brand 90s',
+      questions: [
+        { q: 'Která čokoládová tyčinka s arašídy a karamelem má reklamní slogan "Když máš hlad, nejsi to ty"?', a: 'Snickers', c: 'Reklamy s celebritami, které se po hladu mění zpět v sebe. Až bys řekl, že je to o jídle.' },
+        { q: 'Jak se jmenovaly nejoblíbenější žvýkačky 90s, prodávané v malých modrobílých papírcích a s nasbíranými obrázky?', a: 'Pedro', c: 'Hvězdy, kapsy plné papírků, lepicí obrázky na lavici. A taky první výprask za žvýkání ve škole.' },
+        { q: 'Jak se jmenoval prášek na rozpouštění ve vodě v 90s — přicházel v různých příchutích a barvil jazyk?', a: 'Yupi (Jupík)', c: 'Cukr a éčka v jednom sáčku. Maminky to nesnášely, vy jste to milovali. Plastová lahev s tím trénovala vaši imunitu.' },
+        { q: 'Jak se jmenuje legendární česká čokoláda v hnědozlatém obalu se zoubkováním po stranách, s rozinkami a oříšky?', a: 'Studentská pečeť', c: 'Voda, ořechy, hrozinky, mléko, kakao... A pocit, že jíte něco intelektuálnějšího než obyčejnou čokoládu.' },
+        { q: 'Jak se jmenoval pomerančový nápoj v plastovém sáčku se slámkou — nesoucí jméno italského ostrova?', a: 'Capri Sonne', c: 'Píchnout slámku jste museli přesně, jinak se v něm utopila a museli jste pít odshora. A nedalo se rozpít na později.' },
+        { q: 'Jak se jmenovaly malé bonbóny v různých barevných příchutích, prodávané v průhledných sáčcích pod značkou Nestlé?', a: 'Bonpari', c: 'Žlutá citron, červená malina, zelená jablko. A vždycky jste skončili tím, že jste hledali tu poslední růžovou na dně sáčku.' },
+        { q: 'V kterém přesně roce otevřel první McDonald\'s v Česku?', a: '1992', c: 'Fronty kolem celého bloku. Cheeseburger byla luxusní událost. Vaši rodiče vám ho dovolili tak jednou za měsíc.' },
+        { q: 'Jaký byl ikonický český kakaový nápojový prášek z 90s, který se sypal do mléka — v zelenobílém papírovém sáčku?', a: 'Granko', c: 'Lžička do mléka, zamíchat — a malí Češi 90s měli energii do tělocviku. Klasika z Modřan od Orionu.' }
+      ],
+      bonus: { q: 'V jaké pražské ulici otevřel první McDonald\'s v České republice?', a: 'Vodičkova', c: 'Vodičkova 32, Praha 1. Žije dodnes. A to už jste si tam podle všeho objednali nejmíň 50 cheeseburgerů za život.' }
+    },
+    {
+      name: 'Nápoje (alko i nealko)',
+      questions: [
+        { q: 'Která americká kolová značka s červenobílým logem a charakteristickou láhvi dominuje světu od roku 1886?', a: 'Coca-Cola', c: 'Vánoční reklama s ledním medvědem. Sváteční nálada v plechovce. A taky důvod, proč český Santa nosil dárky v červené místo modré.' },
+        { q: 'Která americká konkurenční značka koly s modrobílým logem proslavila v 90s soutěž "Pepsi Challenge"?', a: 'Pepsi', c: 'Slepé testy ve sladkých nákupních centrech. Většinou vyhrávala Pepsi — protože sladší. A Coca-Cola žila dál.' },
+        { q: 'Jaká česká minerální voda se sídlem v Kyselce u Karlových Varů má v logu modré písmeno "M"?', a: 'Mattoni', c: 'Heinrich Mattoni přivezl bohatý karlovarský byznys už v 19. století. Dnes ji pijete na svatbě, narozeninách i v hospodě, když nepijete pivo.' },
+        { q: 'Jaký rakouský energy drink s reklamním sloganem "...ti dá křídla" přišel v 90s do Česka?', a: 'Red Bull', c: 'Dietrich Mateschitz si přivezl recept z Thajska, podepsal smlouvu, založil impérium. A přihrál nám slogan, kterým si jako děcka dělali srandu z přátel skákajících ze schodů.' },
+        { q: 'Jaký český likér z Karlových Varů s 27 bylinami má charakteristickou plochou zelenou lahev?', a: 'Becherovka', c: 'Třináctý byliny, dvacátá karlovarská přísada — recept zná jen pár lidí. A přitom je v každém českém baru, panák za 50 korun.' },
+        { q: 'Jaký český bylinný likér se vyrábí v Plzni od roku 1927, charakteristický šedý design a hořkou chutí?', a: 'Fernet Stock', c: 'Heinz Stock to vyrobil v Plzni jako "italský bitter pro Čechy". Trpká chuť ranního kocoviny, kterou si dáváte jako lék. A pak ještě jeden.' },
+        { q: 'Jaká česká značka sektů (šumivých vín) má kořeny ve Starém Plzenci, založená v 19. století?', a: 'Bohemia Sekt', c: 'Šampaňské v plebejské. Stará tradice, brut, polosuché. Když Čech slaví něco důležitého, vystřelí korek od Bohemia Sektu.' },
+        { q: 'Jak byl po EU regulaci v roce 2003 oficiálně přejmenován "tuzemský rum", protože není pravý rum (vyrábí se z bramborového lihu)?', a: 'Tuzemák', c: 'Pravý "rum" může být jen z cukrové třtiny. Český "rum" z brambor musel změnit jméno. Tuzemák — chuť stejná, identita rozbitá.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavná česká hořká bylinná pálenka z Olomoucka s 22 % alkoholu, s reklamou "K(r)losterneuburg"?', a: 'Fernet Stock Citrus', c: 'Citrusová varianta klasického Fernetu. Mladí ho pili s tonikem, dospělí s ledem. A oba ráno litovali, že vůbec viděli, jak se dělají koktejly.' }
+    }
+    ]
   },
 
   {
     id: 'filmy',
     name: 'Filmy a popkultura',
     icon: '🎬',
-    questions: [
-      { q: 'V kterém roce vyšel film Titanic od Jamese Camerona?',
-        a: '1997',
-        c: 'Leo, Kate, ledový kus dřeva pro dva. A přesto se na ten kus dřeva nevešli. Až do dneška je to záhada inženýrství.' },
-      { q: 'Který americký herec hrál hlavní roli ve filmu Forrest Gump (1994)?',
-        a: 'Tom Hanks',
-        c: '"Život je jako bonboniéra, nikdy nevíš, co dostaneš." Dvě sošky Oscara za nejlepšího herce v řadě — Filadelfie a Gump.' },
-      { q: 'Jak se jmenuje režisér, který vytvořil filmovou ságu Star Wars?',
-        a: 'George Lucas',
-        c: 'Muž, který stvořil galaxii daleko, předaleko — a později ji prodal Disneymu za 4 miliardy dolarů. Klobouk dolů.' },
-      { q: 'Jak se jmenuje slavný film Stevena Spielberga z roku 1993 o klonovaných dinosaurech?',
-        a: 'Jurský park (Jurassic Park)',
-        c: 'Když jste poprvé viděli T-Rexe v dešti, věděli jste, že se v kině něco fakt změnilo. CGI tehdy ohromně předběhlo dobu.' },
-      { q: 'Jak se jmenuje kultovní film z roku 1999 s Keanu Reevesem o virtuální realitě (modrá pilulka / červená pilulka)?',
-        a: 'Matrix',
-        c: 'Modrá, nebo červená? Vy jste si vybrali žvýkačku Pedro a šli si raději hrát ven. A měli jste pravdu.' },
-      { q: 'Jak se jmenuje režisér slavného filmu Pulp Fiction (1994)?',
-        a: 'Quentin Tarantino',
-        c: 'Tanec Travolty s Umou, "Royale with Cheese" a nekonečné dialogy o všem a o ničem. Definice cool 90s.' },
-      { q: 'Jak se jmenuje český film z roku 1996, který získal Oscara za nejlepší cizojazyčný film (Zdeněk Svěrák, malý ruský chlapec)?',
-        a: 'Kolja',
-        c: 'Zdeněk Svěrák, Andrej Chalimon, hudba Ondřeje Soukupa. Dali jsme tomu Oscara a měli jsme oprávněnou národní pýchu na měsíc.' },
-      { q: 'Jak se jmenuje film Jana Hřebejka z roku 2000 (oscarová nominace), kde Bolek Polívka skrývá ve sklepě Žida za 2. světové války?',
-        a: 'Musíme si pomáhat',
-        c: 'Polívka, Anna Šišková, Csongor Kassai. Tragikomedie, která zvládla být dojemná i absurdně vtipná. Klobouk dolů, Honza.' }
-    ],
-    bonus: { q: 'Jak se jmenuje první díl prequel-trilogie Star Wars z roku 1999 (Epizoda I)?',
-        a: 'Skrytá hrozba (The Phantom Menace)',
-        c: 'Jar Jar Binks. To je vlastně celé. Někteří fanoušci dodnes dělají, že tento film nikdy nevznikl.' }
+    variants: [
+    {
+      name: 'Hollywood klasika 90s',
+      questions: [
+        { q: 'V kterém roce vyšel film Titanic od Jamese Camerona?', a: '1997', c: 'Leo, Kate, ledový kus dřeva pro dva. A přesto se na ten kus dřeva nevešli. Až do dneška je to záhada inženýrství.' },
+        { q: 'Který americký herec hrál hlavní roli ve filmu Forrest Gump (1994)?', a: 'Tom Hanks', c: '"Život je jako bonboniéra, nikdy nevíš, co dostaneš." Dvě sošky Oscara za nejlepšího herce v řadě — Filadelfie a Gump.' },
+        { q: 'Jak se jmenuje režisér, který vytvořil filmovou ságu Star Wars?', a: 'George Lucas', c: 'Muž, který stvořil galaxii daleko, předaleko — a později ji prodal Disneymu za 4 miliardy dolarů. Klobouk dolů.' },
+        { q: 'Jak se jmenuje slavný film Stevena Spielberga z roku 1993 o klonovaných dinosaurech?', a: 'Jurský park (Jurassic Park)', c: 'Když jste poprvé viděli T-Rexe v dešti, věděli jste, že se v kině něco fakt změnilo. CGI tehdy ohromně předběhlo dobu.' },
+        { q: 'Jak se jmenuje kultovní film z roku 1999 s Keanu Reevesem o virtuální realitě (modrá pilulka / červená pilulka)?', a: 'Matrix', c: 'Modrá, nebo červená? Vy jste si vybrali žvýkačku Pedro a šli si raději hrát ven. A měli jste pravdu.' },
+        { q: 'Jak se jmenuje režisér slavného filmu Pulp Fiction (1994)?', a: 'Quentin Tarantino', c: 'Tanec Travolty s Umou, "Royale with Cheese" a nekonečné dialogy o všem a o ničem. Definice cool 90s.' },
+        { q: 'Jak se jmenuje český film z roku 1996, který získal Oscara za nejlepší cizojazyčný film (Zdeněk Svěrák, malý ruský chlapec)?', a: 'Kolja', c: 'Zdeněk Svěrák, Andrej Chalimon, hudba Ondřeje Soukupa. Dali jsme tomu Oscara a měli jsme oprávněnou národní pýchu na měsíc.' },
+        { q: 'Jak se jmenuje film Jana Hřebejka z roku 2000 (oscarová nominace), kde Bolek Polívka skrývá ve sklepě Žida za 2. světové války?', a: 'Musíme si pomáhat', c: 'Polívka, Anna Šišková, Csongor Kassai. Tragikomedie, která zvládla být dojemná i absurdně vtipná. Klobouk dolů, Honza.' }
+      ],
+      bonus: { q: 'Jak se jmenuje první díl prequel-trilogie Star Wars z roku 1999 (Epizoda I)?', a: 'Skrytá hrozba (The Phantom Menace)', c: 'Jar Jar Binks. To je vlastně celé. Někteří fanoušci dodnes dělají, že tento film nikdy nevznikl.' }
+    },
+    {
+      name: 'Animované filmy & rodinné hity',
+      questions: [
+        { q: 'Jak se jmenuje Disneyho animovaný film z roku 1994 o lvíčeti Simbovi, kterému zabili tátu Mufasu a musí se vrátit na trůn?', a: 'Lví král (The Lion King)', c: '"Hakuna Matata!" Hyenó Scar, slunce nad Pride Rock, Elton John. Generační trauma s hudbou.' },
+        { q: 'Jaký byl první plně počítačově animovaný celovečerní film studia Pixar z roku 1995 — o hračkách, které ožívají, když lidé nejsou v pokoji?', a: 'Toy Story', c: 'Buzz Rakeťák, Woody šerif. Tom Hanks a Tim Allen. Film, který v 90s změnil animaci navždy — a ten šíleně chytlavý song "You\'ve Got a Friend in Me".' },
+        { q: 'Jak se jmenuje animovaná pohádka DreamWorks z roku 2001 o zeleném ošklivém obrovi, který žije v močálu?', a: 'Shrek', c: 'Hloupé vtipy, princezna Fiona, oslík (Eddie Murphy). Pohádka, která rozesmála děti i rodiče — každý jinou částí.' },
+        { q: 'Jak se jmenuje malá oranžová klauní rybička z Pixarova filmu 2003, kterou hledá její tatínek napříč oceánem?', a: 'Nemo (Hledá se Nemo)', c: '"Mr. Marlin! Jsem v poli!" Dory zapomínala. Žralok se zřek\' masa. Pixar nás dovedl plakat u rybí komedie.' },
+        { q: 'Jaký Pixar film z roku 2007 vypráví o pařížské kryse, která má vášeň pro vaření a sní o tom, že bude šéfkuchařem?', a: 'Ratatouille', c: 'Remy a chef Linguini. "Anyone can cook!" Komentář kritika Antona Ega, který spadne do dětství při jediném soustu — animační poezie.' },
+        { q: 'Jak se jmenuje hrdinka Disneyho filmu z roku 1998, čínská dívka, která se vydává za muže, aby šla do armády místo svého otce?', a: 'Mulan', c: '"I\'ll make a man out of you!" Cvičící montáž do dnešního dne. Dračí poradce Mushu (Eddie Murphy), který nese vůně mocné Číny.' },
+        { q: 'Jak se jmenuje animovaný film studia Ghibli z roku 2001 o desetileté dívce, která se ztratí ve světě duchů a pracuje v lázních?', a: 'Cesta do fantazie (Spirited Away)', c: 'Hayao Miyazaki, Oscar za nejlepší animovaný film. Bez-tváří, Haku, smysl pro dobrodružství. Animace, která chytá za srdce, i když máte 40.' },
+        { q: 'Jaký film studia Pixar z roku 2008 vypráví o čistícím robotu, který zůstal sám na opuštěné Zemi a najde lásku v moderní robotce Eve?', a: 'WALL-E', c: 'Skoro bez dialogů prvních 40 minut. Romance dvou robotů, ekologická báseň. Pixar v nejlepší formě.' }
+      ],
+      bonus: { q: 'Jaký Pixar film z roku 2009 vypráví o starém muži, který si přiváže k domu balónky a poletí do Jižní Ameriky — s mladým skautem Russelem?', a: 'Vzhůru do oblak (Up)', c: 'Prvních 10 minut: jedna z nejdojemnějších scén v kině vůbec. Carl a Ellie, celý život v montáži. Pak začne komedie — ale my už jsme plakali.' }
+    }
+    ]
   },
 
   {
     id: 'moda',
     name: 'Móda',
     icon: '👗',
-    questions: [
-      { q: 'Jaké platformové tenisky byly hitem dívek 90s — značka založená v Německu, s podpatky až 10 cm a logem volavky?',
-        a: 'Buffalo',
-        c: 'Bílé platformové tenisky až k 10 cm. Schopnost zlomit kotník v jednom kroku. Generace, která je nosila, dnes nadává svým matkám, že je tolerovaly.' },
-      { q: 'Jaké sportovní tepláky se v 90s staly synonymem "street stylu" — německá značka s logem tří pruhů?',
-        a: 'Adidas',
-        c: 'Tři pruhy. Sport, ulice, večerka. Pánové i dámy. Generace, která je nosila i do divadla.' },
-      { q: 'Jaká plátěná značka tenisek s pětihrannou hvězdou v logu se v 90s stala uniformou alternativní mládeže (grunge, punk, ska)?',
-        a: 'Converse (Chuck Taylor / All Star)',
-        c: 'Chuck Taylor All-Star. Červené, černé, modré, plátno. Pankáči, grungeři, skinheadi — všichni v nich. A dnes se nosí pořád, jen je vyrábí Nike.' },
-      { q: 'Jakou značku basketbalových bot proslavil Michael Jordan v 90s — modelová řada "Air ___"?',
-        a: 'Nike (Air Jordan)',
-        c: 'Michael Jordan podepsal s Nike v roce 1984. Air Jordany 90s — to byla měna mezi puberťáky. Některé modely dnes prodávají za 5000+ EUR.' },
-      { q: 'Jak se nazýval typický pánský účes 80s/90s — krátké vlasy nahoře a na bocích, dlouhé vzadu v týle?',
-        a: 'Mullet (česky "spaní" nebo "křídlovec")',
-        c: 'Vpředu princ, vzadu rocker. Účes, který musel mít každý druhý český kluk 90s. A Petr Janda dodnes.' },
-      { q: 'Jaká drobná kožená podpažní kabelka na krátkém řemínku, kterou v "Sex ve městě" nosila Carrie Bradshaw, se stala módním fenoménem 90s/00s?',
-        a: 'Fendi Baguette',
-        c: 'Italská značka Fendi vyrobila tu charakteristickou minikabelku v roce 1997. Stala se prvním "it-bag" historie. Carrie ji nosila i ve scéně, kdy ji oloupili — a vzlykala kvůli kabelce, ne kvůli zbrani.' },
-      { q: 'Jak se jmenuje nejslavnější česká supermodelka 90s, která v roce 1991 vyhrála soutěž "Elite Model Look" a stala se mezinárodní ikonou módy?',
-        a: 'Tereza Maxová',
-        c: 'Z Berouna na světové výsluní. Vogue, Elle, kosmetické kampaně. A pak založila nadaci pro děti, která dodnes pomáhá tisícům opuštěných dětí.' },
-      { q: 'Jaký italský módní návrhář byl v červenci 1997 zastřelen sériovým vrahem Andrewem Cunananem přímo před svou vilou v Miami Beach?',
-        a: 'Gianni Versace',
-        c: 'Ikona italské módy 80s/90s. Žil v South Beach Miami, zastřelen ráno cestou od kavárny. Cunanan se pak ukryl na lodi, kde po dvou týdnech spáchal sebevraždu.' }
-    ],
-    bonus: { q: 'Jaký byl slogan ikonické reklamy na podprsenky Wonderbra z roku 1994, kde česká supermodelka Eva Herzigová pózovala v sexy póze?',
-        a: 'Hello Boys!',
-        c: 'Billboard, který způsobil dopravní nehody v Londýně. Eva Herzigová se stala ikonou. Wonderbra zvedla prodeje o 80 % v jediném roce. Reklama desetiletí.' }
+    variants: [
+    {
+      name: 'Móda a značky 90s/00s',
+      questions: [
+        { q: 'Jaké platformové tenisky byly hitem dívek 90s — značka založená v Německu, s podpatky až 10 cm a logem volavky?', a: 'Buffalo', c: 'Bílé platformové tenisky až k 10 cm. Schopnost zlomit kotník v jednom kroku.' },
+        { q: 'Jaké sportovní tepláky se v 90s staly synonymem "street stylu" — německá značka s logem tří pruhů?', a: 'Adidas', c: 'Tři pruhy. Sport, ulice, večerka. Pánové i dámy. Generace, která je nosila i do divadla.' },
+        { q: 'Jaká plátěná značka tenisek s pětihrannou hvězdou v logu se v 90s stala uniformou alternativní mládeže?', a: 'Converse (Chuck Taylor / All Star)', c: 'Chuck Taylor All-Star. Pankáči, grungeři, skinheadi — všichni v nich. A dnes je vyrábí Nike.' },
+        { q: 'Jakou značku basketbalových bot proslavil Michael Jordan v 90s — modelová řada "Air ___"?', a: 'Nike (Air Jordan)', c: 'Michael Jordan podepsal s Nike v roce 1984. Některé modely dnes prodávají za 5000+ EUR.' },
+        { q: 'Jak se nazýval typický pánský účes 80s/90s — krátké vlasy nahoře a na bocích, dlouhé vzadu v týle?', a: 'Mullet (česky "spaní" nebo "křídlovec")', c: 'Vpředu princ, vzadu rocker. Účes, který musel mít každý druhý český kluk 90s. A Petr Janda dodnes.' },
+        { q: 'Jaká drobná kožená kabelka na krátkém řemínku, kterou v "Sex ve městě" nosila Carrie Bradshaw, se stala módním fenoménem 90s/00s?', a: 'Fendi Baguette', c: 'Italská značka Fendi vyrobila tu minikabelku v roce 1997. Stala se prvním "it-bag" historie.' },
+        { q: 'Jak se jmenuje nejslavnější česká supermodelka 90s, která v roce 1991 vyhrála soutěž "Elite Model Look"?', a: 'Tereza Maxová', c: 'Z Berouna na světové výsluní. Vogue, Elle, kosmetické kampaně. A pak založila nadaci pro děti.' },
+        { q: 'Jaký italský módní návrhář byl v červenci 1997 zastřelen sériovým vrahem Andrewem Cunananem přímo před svou vilou v Miami Beach?', a: 'Gianni Versace', c: 'Ikona italské módy 80s/90s. Cunanan se pak ukryl na lodi, kde po dvou týdnech spáchal sebevraždu.' }
+      ],
+      bonus: { q: 'Jaký byl slogan ikonické reklamy na podprsenky Wonderbra z roku 1994, kde česká supermodelka Eva Herzigová pózovala v sexy póze?', a: 'Hello Boys!', c: 'Billboard, který způsobil dopravní nehody v Londýně. Eva Herzigová se stala ikonou. Wonderbra zvedla prodeje o 80 % v jediném roce.' }
+    },
+    {
+      name: 'Účesy, doplňky & make-up',
+      questions: [
+        { q: 'Jak se jmenoval populární dámský účes z 90s podle postavy Rachel Green z amerického sitcomu Přátelé?', a: 'The Rachel', c: 'Jennifer Aniston ten účes nesnášela, ale celý svět ho chtěl. Kadeřník v každém koutě nabízel "Rachel haircut".' },
+        { q: 'Jak se nazývaly pichlavé blond vrcholky vlasů u kluků z boy bandů 00s (Justin Timberlake, *NSYNC)?', a: 'Frosted tips', c: 'Gel, peroxid, hluboké životní rozhodnutí. Každý kluk 00s, který chtěl být cool, to měl. Dnes si to každý hluboce ošklíví.' },
+        { q: 'Jak se jmenoval kovový nástroj 90s, který vytvářel z hladkých vlasů charakteristické zig-zag vlnky?', a: 'Crimper (kudrnatka)', c: 'Vlasy v zig-zag. Spice Girls to měly. Vy jste si je dělali doma a smrdělo to spáleninou.' },
+        { q: 'Jak se jmenovala látková gumička do vlasů 90s, populární i jako náramek na zápěstí?', a: 'Scrunchie', c: 'Růžová, modrá, kytkovaná, semišová. Vrátila se zpět kolem roku 2020 — a maminky se smály.' },
+        { q: 'Jak se jmenoval úzký dámský obojek/náhrdelník 90s, často z černé pružné tkaniny nebo s tetování-vzorem?', a: 'Choker', c: 'Černý gumový pásek kolem krku. Buffy, Drew Barrymore, vy v deváté třídě. Symbol "tajemné dospělé ženy" za 39 korun.' },
+        { q: 'Která americká popová zpěvačka si v únoru 2007 oholila hlavu během veřejného nervového zhroucení?', a: 'Britney Spears', c: 'Foto z holičství obletělo svět. Symbol popkulturní krize. A pak ten paparazzi, kterého napadla deštníkem.' },
+        { q: 'Jak se jmenoval krátký asymetrický dámský sestřih, který v 00s proslavila Victoria Beckham (Posh Spice)?', a: 'Pob (Posh Bob)', c: 'Vpředu delší, vzadu kratší. Úhel hodin v každém kadeřnictví. A Victoria s tím chodila i na předávání cen.' },
+        { q: 'Jak se nazýval pánský krátký účes 90s/00s s ofinou na čele, proslavený Bradem Pittem a George Clooneym?', a: 'Caesar cut', c: 'Římské reminiscence v moderní podobě. Krátké, jednoduché, mužné. A stříhal ho každý druhý kadeřník špatně.' }
+      ],
+      bonus: { q: 'Jaký byl název kultovního stylingového gelu na vlasy s rebelsky vyhlížejícím obalem, oblíbeného u kluků 00s pro tvrdé "spike" vrcholky?', a: 'Got2b (Schwarzkopf)', c: 'Černá tuba s lebkou nebo plameny. Stačila kapka a vlasy stály týden. A když pršelo, stékal vám po čele jako recept na akné.' }
+    }
+    ]
+  },
+
+  {
+    id: 'hry',
+    name: 'Hry a konzole',
+    icon: '🎮',
+    variants: [
+    {
+      name: 'Klasiky konzolí a PC 90s',
+      questions: [
+        { q: 'Jaká kultovní hra Game Boy se hraje s padajícími barevnými kostkami (tetrominoes), které tvoří řady — vynalezl ji Rus Alexej Pažitnov?', a: 'Tetris', c: 'Sovětský export, který vydělal víc než vodka. Hudba Korobeiniki vám hraje v hlavě i v 35 letech, když jdete koupit chleba.' },
+        { q: 'Jak se jmenovala japonská elektronická hračka z 1996 — vajíčko, ve kterém žije virtuální zvíře, které musíte krmit a chodit s ním na záchod?', a: 'Tamagotchi', c: 'Bandai. Děcka po celém světě truchlila, když jim ve škole umřel virtuální brouk. Učitelé je zabavovali — a doma plakali, že je nestihli nakrmit.' },
+        { q: 'Jak se jmenuje slavná 3D first-person shooter hra id Software z roku 1993, kde marine bojuje proti démonům z pekel?', a: 'Doom', c: 'John Carmack a John Romero. Šareware verze obletěla planetu po dialupu. Naučila nás WASD a strach z růžových monster.' },
+        { q: 'Jak se jmenuje série her Game Boy z 1996 o chytání a trénování kapesních monster, s první generací 151 stvoření?', a: 'Pokémon (Red/Blue)', c: 'Game Boy s ergem, dva kabely, dvě edice. "Gotta catch \'em all!" A vy jste zachránili Pikachu z jeskyně bez baterky.' },
+        { q: 'Jaký modrý ježek-maskot byl tváří herní konzole Sega Genesis a jeho hlavní protivník byl Dr. Robotnik (Eggman)?', a: 'Sonic (Sonic the Hedgehog)', c: 'Sega proti Nintendu — celé 90s. Sonic byl rychlejší než Mario. A jeho hudba vám pak hrála v hlavě celý den.' },
+        { q: 'Která Blizzard hra z 1996 o démonech, hřbitovech a hrdinech v gotickém dungeonu (Tristram) definovala action-RPG žánr?', a: 'Diablo', c: 'Klikání myší, sbírání lootu, hluboký kostnicový dungeon. Diablo II (2000) pak rozjelo internet a první online gaming pro českou mládež.' },
+        { q: 'Jaká online FPS hra od Valve, původně mod pro Half-Life, ovládla LAN parties 00s — Counter-Terrorists vs. Terrorists?', a: 'Counter-Strike', c: '"Rush B!" Plant the bomb. AK-47 nebo M4. Generace českých kluků vyrostlá na de_dust2 — někteří se z toho dodnes nevzpamatovali.' },
+        { q: 'Jak se jmenovala česká point-and-click adventura z roku 1998 o detektivovi Pankrácovi, který řeší tajemné případy?', a: 'Polda', c: 'Český humor, voice over Luďka Soboty. Polda 2, 3, 4... celá série. CD-ROM v krabici od cornflakes, který jste hráli s rodičema.' }
+      ],
+      bonus: { q: 'Jak se jmenovala česká real-time strategie z roku 2001, ve které tři frakce bojovaly ve druhé světové válce s technologií cestování časem?', a: 'Original War', c: 'Altar Interactive z Brna. Češi vyrobili strategii, kterou si i mezinárodně koupili. Geniální příběh, neoptimalizovaná hra — typický český engineering.' }
+    }
+    ]
+  },
+
+  {
+    id: 'sport',
+    name: 'Sport a Olympiády',
+    icon: '⚽',
+    variants: [
+    {
+      name: 'Hokej, NHL & Nagano',
+      questions: [
+        { q: 'Jak se jmenuje nejslavnější český hokejista, který hrál v Pittsburghu a NY Rangers, nosil dlouhé vlasy a číslo 68?', a: 'Jaromír Jágr', c: 'Z Kladna do haly slávy NHL. Hraje si dodnes (s 50+) a porazí cokoli s holí v ruce.' },
+        { q: 'Jak se jmenoval geniální brankář, který v Naganu 1998 vychytal Čechům zlato — přezdívka "Dominator"?', a: 'Dominik Hašek', c: 'Buffalo Sabres, Detroit Red Wings. Nejlepší brankář na světě. Pohyby jako had, výkony jako bůh.' },
+        { q: 'V jakém roce vyhrála česká hokejová reprezentace olympijský turnaj v Naganu?', a: '1998', c: 'První a zatím jediné zlato. Národ stál v noci kolem televizí. Václav Havel poslal gratulaci přímo z Pražského hradu.' },
+        { q: 'Kolikrát celkem vyhrál Jaromír Jágr Stanley Cup v Pittsburghu (s Mario Lemieux)?', a: '2× (1991, 1992)', c: 'Mladší než kde kdo z týmu. Dvě sezóny v řadě v Pittsburgu, dva poháry. Pak už nikdy.' },
+        { q: 'Jak se jmenoval kanadský "Great One", legendární hokejista NHL s číslem 99 — držitel většiny rekordů NHL?', a: 'Wayne Gretzky', c: 'Edmonton, LA Kings, St. Louis, NY Rangers. Číslo 99 oficiálně vyřazené v celé NHL. Žádný hokejista po něm to nedostane.' },
+        { q: 'V jakém roce vyhrála česká reprezentace mistrovství světa v hokeji v norském Lillehammeru/Oslu?', a: '1999', c: 'Po Naganu další zlato. Začátek tzv. "zlaté éry" českého hokeje.' },
+        { q: 'Jak se jmenoval český obránce, který v Naganu 1998 vstřelil rozhodující gól ve finále proti Rusku?', a: 'Petr Svoboda', c: 'Tichý hrdina. Jediný gól zápasu (1:0). Stal se z toho národní vzpomínka.' },
+        { q: 'Jaký český hokejový klub vyhrál čtyřikrát po sobě Extraligu v letech 1995–1999?', a: 'HC Vsetín', c: 'Valašská pohádka. Malý klub z vesnice, který porazil Spartu i Slavii v řadě. Pak finanční problémy a pád.' }
+      ],
+      bonus: { q: 'Kolikrát v řadě vyhrála česká reprezentace mistrovství světa v hokeji v letech 1999–2001 (tzv. "zlatý hattrick")?', a: '3× v řadě (1999, 2000, 2001)', c: 'Norsko, Petrohrad, Hannover. Tři zlata za sebou. Žádná jiná země to v moderním hokeji neudělala. A Češi tehdy věřili, že je to jejich sport.' }
+    }
+    ]
+  },
+
+  {
+    id: 'reklamy',
+    name: 'Reklamy a slogany',
+    icon: '🤡',
+    variants: [
+    {
+      name: 'Slavné slogany — doplň text',
+      questions: [
+        { q: 'Doplň český reklamní slogan: "Stop! Toto nejsou banány, toto jsou ___"', a: 'Banány v čokoládě', c: 'Orion vyrobil banán. Pak ho omotal čokoládou. A vy jste šíleli, když je v lednici nebyly. Reklama jako z 90s, slogan jako evergreen.' },
+        { q: 'Doplň český reklamní slogan na koření Vegeta: "Hodím si ___"', a: 'Vegetu', c: 'Maggi proti Vegetě, eternální český kuchyňský souboj. Slogan, který říkala maminka při každé polévce.' },
+        { q: 'Doplň anglický slogan Nokia z 90s: "Nokia — Connecting ___"', a: 'People', c: 'Connecting People. Slogan z roku 1992 (!). Když měla Nokia 95 % trhu. Pak přišlo iPhone a Nokia... no, zkusila to.' },
+        { q: 'Doplň slogan Nike, který od 1988 dominuje sportovní reklamě: "Just ___"', a: 'Do It', c: 'Inspirován posledními slovy odsouzence k smrti Gary Gilmora ("Let\'s do it"). Marketingová úprava: "Just". Dnes nejcennější slogan v historii.' },
+        { q: 'Doplň český slogan L\'Oréal s Aishwarya Rai a dalšími: "L\'Oréal. Protože ___"', a: 'Vy za to stojíte', c: '"Because You\'re Worth It." Slogan od 1971. Generace žen ho slyšela a věřila, že kupuje drahý šampón právem.' },
+        { q: 'Doplň slogan Škoda Auto z 00s, který používají dodnes: "Simply ___"', a: 'Clever', c: 'Od 2007. Chytré detaily v autě. Škrabka v palivovém víčku, deštník v dveřích. Češi v Mladé Boleslavi mysleli a Němci to chválili.' },
+        { q: 'Doplň anglický slogan M&M\'s, který známe i v Česku: "Roztaje v ___, ne v ___"', a: 'v ústech, ne v dlani (Melts in your mouth, not in your hand)', c: '1954 — slogan od Forrest Mars. Důvod, proč jste M&Mka jedli i v autě, v posteli, ve škole.' },
+        { q: 'Doplň anglický slogan McDonald\'s z roku 2003, který běží dodnes: "I\'m lovin\' ___"', a: 'it', c: 'Justin Timberlake nazpíval znělku ("Pa pa pa pa paaa"). McDonald\'s zaplatil 6 milionů dolarů. A vy jste si ji prozpěvovali ve frontě na hranolky.' }
+      ],
+      bonus: { q: 'Doplň slogan Apple z roku 1997, kterým se Steve Jobs vrátil do firmy a oznámil nový kurz: "Think ___"', a: 'Different', c: '"Here\'s to the crazy ones." Reklama "Think Different" se značkami Einsteina, Gandhího, Picassa. Steve Jobs ji odvysílal jen jednou kompletně — a změnila vnímání Apple navždy.' }
+    }
+    ]
+  },
+
+  {
+    id: 'maskoti',
+    name: 'Maskoti a postavičky',
+    icon: '🐕',
+    variants: [
+    {
+      name: 'Český večerníček',
+      questions: [
+        { q: 'Jak se jmenuje malý černý hrdina českého animáku Zdeňka Milera, který bydlí v krtinci v lese a používá hlas "Ojoj!"?', a: 'Krteček', c: 'Bez slov, mezinárodně srozumitelný. Krteček ke kalhotkám, k autíčku, do města, do vesmíru. Český animační export, který znala i Hu Ťin-tchao.' },
+        { q: 'Jak se jmenují dva králíčci, kteří žijí v klobouku kouzelníka v české kreslené pohádce?', a: 'Bob a Bobek', c: '"Bobe, Bobku!" Klobouk u stolu, hudba od Marka Ebena, jednoduchá pravidla. Generační kapsa nostalgie.' },
+        { q: 'Jak se jmenuje žluto-černá včelí hrdinka německo-japonského animáku, který Češi znali z dabingu Karla Gotta?', a: 'Včelka Mája', c: '"Včelka Mája, Včelka Mája!" Vilík kamarád, Žihadlík nepřítel. Gott zazpíval znělku, kterou znal každý český dítě.' },
+        { q: 'Jak se jmenuje obrovský bílý pes z české kreslené série Václava Bedřicha, který chodí s chlapcem do školy?', a: 'Maxipes Fík', c: '"Fíkulín!" Hudba od Petr Skoumal. Klape ouškama. Vlastně to byl ovčák, ne pes. Ale my jsme to nevěděli.' },
+        { q: 'Jak se jmenují dva čeští/slovenští údržbáři-kutilové z animované série, kteří všechno opravují s otevřenou pusou a beze slov?', a: 'Pat a Mat', c: '"...a je to!" Slovenský animační poklad. Žluté a červené čepice. Nikdy nemluvili, ale my jsme z nich měli každý druhý záchvat smíchu.' },
+        { q: 'Jak se jmenuje slavný česky animovaný mravenec ve fraku z knih Ondřeje Sekory, který má kamarády Brouka Pytlíka a Berušku?', a: 'Ferda Mravenec', c: '"Práce všeho druhu!" Ferda, dělník i dobrodruh. Brouk Pytlík, šlechtic z lesa. Tahle dvojice nás naučila řemeslo i pýchu.' },
+        { q: 'Jak se jmenuje legendární vládce Krkonoš, vousatý dědek s holí, který chrání lesy a trestá zlé lidi?', a: 'Krakonoš', c: '"Krakonošovy pohádky" — Jiří Lábus jako Trautenberk. Krakonoš s velkým vousem a holí, který ve sklenici hrne mraky.' },
+        { q: 'V jakém roce vznikl první díl seriálu o Krtečkovi (originální název "Jak Krtek ke kalhotkám přišel")?', a: '1956', c: 'Zdeněk Miler chtěl udělat film o lnu, ale potkal krtka. Z toho vznikl světový fenomén — Krteček prodaný do 80 zemí, miláček i čínského prezidenta.' }
+      ],
+      bonus: { q: 'Kdo byl tvůrce a animátor Krtečka, slavný český kreslíř narozený v roce 1921, který zemřel v roce 2011?', a: 'Zdeněk Miler', c: 'Studio Bratři v triku. Krteček, Krakonoš, řada večerníčků. Bez něj by české dětství v 60s-00s vypadalo úplně jinak.' }
+    }
+    ]
   }
 ];
 
@@ -1532,8 +1710,9 @@ let state = {
   ],
   completedCategories: {},                  // { categoryId: { playerId: skore } }
   currentCategoryId: null,
+  currentVariantIndex: 0,                   // která sada otázek se právě hraje (index v cat.variants)
   currentQuestionIndex: 0,
-  phase: 'setup',                           // setup | home | collect | review | finished
+  phase: 'setup',                           // setup | home | variant-picker | collect | review | finished
   categoryRunning: {},                      // { playerId: skore }
   reviewMarks: {},                          // { playerId: null | 'correct' | 'wrong' | 'skip' }
   reviewSubPhase: 'reminder',
@@ -1642,6 +1821,54 @@ function startGame() {
 }
 
 /* =================================================================
+   VARIANT PICKER — výběr sady otázek po kliknutí na kategorii
+   ================================================================= */
+function showVariantPicker(categoryId) {
+  const cat = getCategory(categoryId);
+  if (!cat || !cat.variants || cat.variants.length === 0) return;
+
+  state.currentCategoryId = categoryId;
+
+  // Pokud je jen jedna sada, přeskoč picker a rovnou hraj
+  if (cat.variants.length === 1) {
+    state.currentVariantIndex = 0;
+    startCategory(categoryId);
+    return;
+  }
+
+  state.phase = 'variant-picker';
+
+  document.getElementById('picker-icon').textContent = cat.icon;
+  document.getElementById('picker-cat-name').textContent = cat.name;
+
+  const list = document.getElementById('variant-list');
+  list.innerHTML = '';
+  cat.variants.forEach((v, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'variant-btn';
+    btn.innerHTML = `
+      <span class="variant-btn-num">${idx + 1}</span>
+      <span class="variant-btn-name">${escapeHtml(v.name)}</span>
+    `;
+    btn.onclick = () => selectVariant(idx);
+    list.appendChild(btn);
+  });
+
+  showScreen('screen-variant-picker');
+}
+
+function selectVariant(idx) {
+  state.currentVariantIndex = idx;
+  startCategory(state.currentCategoryId);
+}
+
+function getCurrentVariant() {
+  const cat = getCategory(state.currentCategoryId);
+  if (!cat) return null;
+  return cat.variants[state.currentVariantIndex] || cat.variants[0];
+}
+
+/* =================================================================
    HOME SCREEN
    ================================================================= */
 function renderHome() {
@@ -1699,7 +1926,7 @@ function renderHome() {
       ${statusHtml}
     `;
     if (!isDone) {
-      tile.onclick = () => startCategory(cat.id);
+      tile.onclick = () => showVariantPicker(cat.id);
     }
     grid.appendChild(tile);
   });
@@ -1764,19 +1991,20 @@ function renderQuestionScreen() {
     : progressLabel + ' ' + (state.currentQuestionIndex + 1) + ' / 9';
 
   const body = document.getElementById('quiz-body');
+  const variant = getCurrentVariant();
 
   if (state.phase === 'collect') {
-    renderCollectPhase(body, cat, isBonus);
+    renderCollectPhase(body, variant, isBonus);
   } else if (state.phase === 'review') {
-    renderReviewPhase(body, cat, isBonus);
+    renderReviewPhase(body, variant, isBonus);
   }
 
   showScreen('screen-quiz');
 }
 
 /* ----- Fáze 1: SBĚR — postupně 9 otázek bez odpovědí ----- */
-function renderCollectPhase(body, cat, isBonus) {
-  const q = isBonus ? cat.bonus : cat.questions[state.currentQuestionIndex];
+function renderCollectPhase(body, variant, isBonus) {
+  const q = isBonus ? variant.bonus : variant.questions[state.currentQuestionIndex];
   const points = isBonus ? BONUS_POINTS : POINT_VALUES[state.currentQuestionIndex];
   const isLast = isBonus; // bonusová otázka je vždy poslední (9.)
 
@@ -1805,8 +2033,8 @@ function renderCollectPhase(body, cat, isBonus) {
    - 'reminder' = zopakuje otázku, běží 5s odpočet, pak se odhalí odpověď
    - 'reveal'   = ukáže odpověď + komentář + sloupce Petr/Martina pro označení
    --------------------------------------------------------------------------- */
-function renderReviewPhase(body, cat, isBonus) {
-  const q = isBonus ? cat.bonus : cat.questions[state.currentQuestionIndex];
+function renderReviewPhase(body, variant, isBonus) {
+  const q = isBonus ? variant.bonus : variant.questions[state.currentQuestionIndex];
   const points = isBonus ? BONUS_POINTS : POINT_VALUES[state.currentQuestionIndex];
 
   const banner = isBonus
