@@ -2226,6 +2226,743 @@ const CATEGORIES = [
 ];
 
 /* =================================================================
+   ALT_POOLS — alternativní sady otázek (set B) pro každou variantu.
+   selectVariant() losuje mezi set A (variants[i].questions) a set B (ALT_POOLS[cat][i]).
+   Pole má stejný index jako variants[] v dané kategorii.
+   ================================================================= */
+const ALT_POOLS = {
+  hudba: [
+    /* V0 alt — Mezinárodní klasika 90s */
+    {
+      questions: [
+        { q: 'Která kanadská zpěvačka má slavný hit "Ironic" z roku 1995 a album "Jagged Little Pill"?', a: 'Alanis Morissette', c: 'Grammy za album roku. 90s teenage angst v koncentrované podobě. A celá generace si zpívala "It\'s like raaain on your wedding day."' },
+        { q: 'Která americká alternativní rocková kapela má hit "Losing My Religion" z roku 1991?', a: 'R.E.M.', c: 'Michael Stipe, Peter Buck. Hit, který nebyl o náboženství. Album "Out of Time" — komerční průlom indie kapely.' },
+        { q: 'Která britská kapela má slavnou píseň "Bitter Sweet Symphony" z roku 1997 (s rozhněvaným klipem v Londýně)?', a: 'The Verve', c: 'Richard Ashcroft chodí po Hoxton Street, narazí do lidí. Rolling Stones zažalovali za sample, vzali si všechny royalties. Pak vrátili v 2019. Pozdě, ale gentlemen.' },
+        { q: 'Která americká zpěvačka debutovala v 1999 s hitem "Genie in a Bottle" — bývalá členka Mickey Mouse Club?', a: 'Christina Aguilera', c: 'Soutěž s Britney. Pak "Dirrty" éra. Pak ladylike. Pak Burlesque. Hlas větší než kariéra.' },
+        { q: 'Kdo zpíval autotune-novinku "Believe" z roku 1998 — americká diva starší generace, comeback?', a: 'Cher', c: 'První masové použití autotune jako efektu (ne korekce). "Do you believe in life after love?" Cher pak nestárla — i ve 80 letech jezdí tour.' },
+        { q: 'Která americká grungeová kapela vydala album "Ten" v 1991 a frontman je Eddie Vedder?', a: 'Pearl Jam', c: 'Seattle. "Alive", "Jeremy", "Black". Vedderův hlas — pikla, kterou potřebovala generace flanelových košilí.' },
+        { q: 'Která britská kapela má hit "Creep" z roku 1992 a frontmana Thoma Yorke?', a: 'Radiohead', c: 'Pak album "OK Computer" (1997) — manifest úzkosti tisíciletí. Jeden z nejlepších albumů 90s.' },
+        { q: 'Která americká rocková kapela má hit "Under the Bridge" (1991) a hyperaktivního frontmana Anthony Kiedise?', a: 'Red Hot Chili Peppers', c: 'LA, ponožky na pánech (jen ponožky). Funk-rock fúze, ze které je dnes stadiónová klasika.' }
+      ],
+      bonus: { q: 'Která americká hip-hop skupina natočila v 1996 cover písně "Killing Me Softly" — frontmanka Lauryn Hill?', a: 'The Fugees', c: 'Wyclef Jean, Pras Michel, Lauryn Hill. Album "The Score". Pak se rozpadli. Pak se vrátili. Pak zase rozpadli. Klasika.' }
+    },
+    /* V1 alt — České hity */
+    {
+      questions: [
+        { q: 'Jak se jmenoval slavný český skladatel, autor hudby k Včelce Máje, kreslených pohádek a šlágrů Karla Gotta?', a: 'Karel Svoboda', c: 'Tisíce melodií, miliardy hraní. Spáchal sebevraždu v 2007. Český hudební průmysl po něm dlouho hledal nástupce.' },
+        { q: 'Která česká zpěvačka, herečka a dcera Heleny Vondráčkové... ne, nejsou příbuzné. Která má slavný hit "Zapadlí vlastenci" a hraje v Tabuli cti?', a: 'Lucie Vondráčková', c: 'Hudební a herecká dráha. Provdaná za hokejistu (Tomáš Plekanec). Generace dětských diváčů ji znala z "Polské krve".' },
+        { q: 'Která česká zpěvačka má hity "Tisíc novejch jmen" a "Maluj zase obrázky" — diva 70s/80s, ale v 90s pořád populární?', a: 'Hana Zagorová', c: 'Královna českého popu. Půl století na scéně. Hlas, který vytvořil rozhlasový průmysl.' },
+        { q: 'Která česká diva 60s+, sestra Anny Vondráčkové, má hity "Já a Ty" a "Sladké mámení", duety s Karlem Gottem?', a: 'Helena Vondráčková', c: 'První dáma české scény. Spolupráce s Marie Rottrovou, Karelem Gottem, Petrem Hapkou. Šíře repertoáru — pop, šanson, muzikál.' },
+        { q: 'Jak se jmenuje český zpěvák a herec, hity "Sliby chyby" a "Holky z naší školky"... ne, to je Maxim. Použijme: "Šárko, Šárko"?', a: 'Janek Ledecký', c: 'Rocker, dramatik (muzikál "Iago"), otec Ester (snowboarderka). Multifunkční česky umělec.' },
+        { q: 'Která česká alternativní rocková kapela z Valašského Meziříčí má hit "Hodina H" a "Družba"?', a: 'Mňága a Žďorp', c: 'Petr Fiala (frontman). Folk-rocková fůze. Texty plné nenapodobitelného valašského humoru.' },
+        { q: 'Která česká punk-rocková kapela z 80s/90s má hity "Pankáč" a "I lásku spasit nedaří"?', a: 'Tři sestry', c: 'Lou Fanánek Hagen, Mr. Bohouš. Punkový anarchismus s českým humorem. Hrají dodnes, plné kluby.' },
+        { q: 'Jak se jmenuje česká punk-rocková skupina založená v 80s, jejíž frontmanem byl dlouho Michal "Wasser" Pavlíček?', a: 'Visací zámek', c: '"Lhář, lhář", "Vrak". Underground 80s, masová sláva 90s. Stál se českou punkovou klasikou.' }
+      ],
+      bonus: { q: 'Jak se jmenuje česká hip-hop a rapová skupina založená v 90s, název je zkratka "Jasná aristokracie republiky"?', a: 'J.A.R.', c: 'Roman Holý, Dan Bárta. Fůze jazz, funk, rap. Klubová scéna, kterou jste znali, když jste byli "in".' }
+    },
+    /* V2 alt — Boy bandy & girl groups */
+    {
+      questions: [
+        { q: 'Která irská pop kapela (Ronan Keating frontman) má hit "Words" z 1996?', a: 'Boyzone', c: 'Dublin. "When the going gets tough, the tough get going." Stevo Gately tragicky zemřel v 2009. Skupina pokračovala.' },
+        { q: 'Která irská boy band (5 členů) má hit "Flying Without Wings" z 1999 a producenta Simon Cowellem?', a: 'Westlife', c: 'Číslo 1 v UK 14×. Stoupání na vrchol z piano-baladového kousku. Nostalgická show v O2 Areně každý rok.' },
+        { q: 'Která americká skupina tří bratrů má hit "MMMBop" z roku 1997 — Isaac, Taylor a Zac?', a: 'Hanson', c: 'Tulsa, Oklahoma. Příliš mladí na celebrity, příliš talentovaní na ignorování. "MMMBop" — jeden z nejchytlavějších písní 90s.' },
+        { q: 'Která irská dívčí skupina (4 členky, ale tři jsou sestry) má hit "C\'est la Vie" z 1998?', a: 'B*Witched', c: 'Denim outfity. Irish jig fůze s europopem. Hvězdy a propad, jak to s teenage skupinami chodí.' },
+        { q: 'Která britská boy band (5 členů) má hit "Everybody Get Up" a "When the Lights Go Out"?', a: '5ive', c: 'Reklamní boj proti Backstreet Boys a *NSYNC. Britský underdog v americkém poppu. Nedotáhli, ale baterii jsme s nimi mívali.' },
+        { q: 'Která britská pop skupina (6 členů) má hit "Tragedy" a charakteristickou taneční choreografii s prsty?', a: 'Steps', c: 'Bee Gees cover. Sit-down kontroverze, návrat 2017. UK pop pro dospívající dívky 90s/00s.' },
+        { q: 'Která britská boy band (4 členové) přebila populární hit a-ha "Take On Me" v roce 2000?', a: 'A1', c: 'Norwegian-Irish-British mix. Brit Award Best Single 2001 (paradoxně za cover). Drobná hvězda v záplavě boyband-mánie.' },
+        { q: 'Která britská pop skupina (7 členů) měla vlastní televizní show, hity "S Club Party" a "Reach"?', a: 'S Club 7', c: 'Spice Girls vibe pro mladší. TV show, písničky, "There ain\'t no party like an S Club party." Jedna éra.' }
+      ],
+      bonus: { q: 'Která britská dívčí skupina (3 členky, později 4) má hit "Whole Again" z roku 2001?', a: 'Atomic Kitten', c: 'Liverpool. Pop hity v 00s. Kerry Katona pak skandály celebrity, Natasha Hamilton matka pětkrát. Britská tabloid soap.' }
+    },
+    /* V3 alt — Hip-hop & R&B */
+    {
+      questions: [
+        { q: 'Která americká zpěvačka odešla z Destiny\'s Child na sólo dráhu a má hit "Crazy in Love" z 2003 (feat. Jay-Z)?', a: 'Beyoncé', c: 'Queen B. Manželka Jay-Z (2008). 32 Grammy. Coachella headliner, Beychella legenda. Jedna z největších popových hvězd století.' },
+        { q: 'Který americký R&B zpěvák má hit "U Got It Bad" z 2001 a charakteristické tanečníky 00s?', a: 'Usher', c: 'Album "Confessions" (2004) prodalo 20+ milionů. Tanečník, který naučil generaci 00s, jak má vypadat sexy R&B vystoupení.' },
+        { q: 'Která americká rapperka má futuristickou estetiku a hit "Get Ur Freak On" z 2001?', a: 'Missy Elliott', c: 'Producentka Timbaland. Inovativní klipy, beat-makerka. První ženská rapperka v Rock and Roll Hall of Fame (2023).' },
+        { q: 'Která americká hip-hop dvojice (André 3000 a Big Boi) má hit "Hey Ya!" z 2003?', a: 'OutKast', c: 'Atlanta. "Shake it like a Polaroid picture." Album "Speakerboxxx/The Love Below" 11× platinum. Vrcholná éra hip-hopu.' },
+        { q: 'Která americká R&B zpěvačka má hit "Fallin\'" z 2001 — sama hraje na klavír, charakteristické cornrows?', a: 'Alicia Keys', c: '15 Grammy. New York. "If I Ain\'t Got You", "No One". Kombinace klasického vzdělání a R&B citu.' },
+        { q: 'Který americký rapper z Brooklynu má hity "Hard Knock Life" (sample z Annie) a je manželem Beyoncé?', a: 'Jay-Z', c: 'Shawn Carter. Roc-A-Fella Records. Multi-miliardář. Z brooklynských projects do C-suite. American rap dream.' },
+        { q: 'Která americká R&B zpěvačka, "Queen of R&B", má hit "Real Love" a "Family Affair"?', a: 'Mary J. Blige', c: 'Yonkers, NY. Combinatorika hip-hopu a soulu. Boj s drogami v 90s, comeback, ikona síly. 9 Grammy.' },
+        { q: 'Která americká rapová skupina ze Staten Islandu má 9 členů, hit "C.R.E.A.M." a kung-fu estetiku?', a: 'Wu-Tang Clan', c: 'RZA, GZA, Method Man, Ghostface Killah... "Cash Rules Everything Around Me." Hip-hop, který kupuje single album za 2 miliony dolarů.' }
+      ],
+      bonus: { q: 'Která americká alternativní hip-hop skupina z New Yorku má hit "Me Myself and I" a charakteristický pestrobarevný styl 80s/90s?', a: 'De La Soul', c: 'Long Island. "3 Feet High and Rising" (1989). Sampling vrcholu před copyright tehdy. Pacifistický rap proti gangsta éře.' }
+    },
+    /* V4 alt — Eurodance & techno */
+    {
+      questions: [
+        { q: 'Který švýcarský DJ a zpěvák má hit "Somebody Dance With Me" z 1992?', a: 'DJ BoBo', c: 'René Baumann, Curych. Eurodance v čisté formě. Tour po Evropě non-stop. Děcka 90s ho znaly z MTV Europe.' },
+        { q: 'Která německá dvojice (René Baumann a Lane McCray) má hit "Be My Lover" z 1995?', a: 'La Bouche', c: '"I want you to be my lover." Frankfurt am Main. Smutný konec — Melanie Thornton zemřela při leteckém neštěstí 2001.' },
+        { q: 'Která německá eurodance skupina má hit "Another Night" z 1993?', a: 'Real McCoy (M.C. Sar & The Real McCoy)', c: 'Berlin. Eurodance v top 10 USA. Rare pro evropské projekty. Generace, která mu rozuměla, žila v diskotéce.' },
+        { q: 'Který švédský eurodance projekt má hit "Russian Lullaby" a "Set the World on Fire"?', a: 'E-Type', c: 'Martin Eriksson. Hudba k akčním filmům a videohrám. Švédský eurodance s drsnou estetikou.' },
+        { q: 'Která dánská zpěvačka má hit "Saturday Night" z 1994 — píseň s charakteristickým "I-I-I" refrénem?', a: 'Whigfield', c: 'Sannie Charlotte Carlson. Italoeurodance. Píseň, kterou si pamatuje každý, kdo někdy byl na diskotéce 90s.' },
+        { q: 'Která italská zpěvačka má hit "The Rhythm of the Night" z 1993?', a: 'Corona', c: 'Pop-eurodance, který obletěl planetu. "This is the rhythm of the niiight!" Klubový hit, který hraje na svatbách dodnes.' },
+        { q: 'Která německá eurodance skupina (rapper Jay Supreme) má hit "Mr. Vain" z 1993?', a: 'Culture Beat', c: 'Berlín. "He is the one called Doctor Feelgood." Eurodance nejvyšší kvality podle 35letých Čechů.' },
+        { q: 'Která nizozemská eurodance skupina má hit "No Limit" z 1993 (rapper Ray Slijngaard)?', a: '2 Unlimited', c: '"No no, no no no no, no no no no, no no there\'s no limit!" Diskotékový hymna pro celé tisíciletí.' }
+      ],
+      bonus: { q: 'Který americký scat-zpěvák s charakteristickým mumrajem má hit "Scatman (Ski-Ba-Bop-Ba-Dop-Bop)" z 1994?', a: 'Scatman John', c: 'John Larkin. Bývalý jazz pianista, který v 50 letech vyrobil eurodance hit. "I\'m the Scatman!" Inspirativní příběh úspěchu pozdního.' }
+    }
+  ],
+
+  tv: [
+    /* V0 alt — Mezinárodní seriály 90s */
+    {
+      questions: [
+        { q: 'Jak se jmenoval americký sitcom (1989-1998) o stand-up komikovi a jeho přátelích v New Yorku — "a show about nothing"?', a: 'Seinfeld', c: 'Jerry, George, Elaine, Kramer. Sitcom, který vlastně neměl žádný plot — a stal se nejúspěšnějším komediálním seriálem 90s.' },
+        { q: 'Jak se jmenoval americký sitcom (1993-2004) o newyorském radio psychiatrovi v Seattle — spinoff Cheers?', a: 'Frasier', c: 'Kelsey Grammer jako Dr. Frasier Crane. 37 Emmy Awards (rekord). Inteligentní humor, opera, otec s pivem a psem Eddiem.' },
+        { q: 'Jak se jmenoval americký sitcom (1988-1997) o dělnické rodině z Lanford v Illinois — matka Roseanne Barr?', a: 'Roseanne', c: 'Realistický pohled na americkou střední třídu. Pak revival 2018, který skončil tweetem Roseanne. American family drama IRL.' },
+        { q: 'Jak se jmenoval americký sitcom (1998-2006) o čtyřech přátelích v Manhattanu — Will a Grace, Jack a Karen?', a: 'Will & Grace', c: 'Prvni mainstream sitcom s gay protagonistou. Cultural impact: změnil americký pohled na LGBT komunitu.' },
+        { q: 'Jak se jmenoval americký lékařský seriál (1994-2009) odehrávající se v Cook County General Hospital v Chicagu?', a: 'Pohotovost (ER)', c: 'George Clooney debutoval jako Dr. Doug Ross. Pak Anthony Edwards, Noah Wyle. Definoval žánr medical dramatu na 15 let.' },
+        { q: 'Jak se jmenoval americký policejní drama (1993-2005) odehrávající se na newyorském 15. okrsku — průlomová "morálně šedá" postava?', a: 'NYPD Blue', c: 'Andy Sipowicz (Dennis Franz). Bochanec, alkoholik, dobrý policajt. Drsná kombinace, kterou žádný předchozí kop ne přinesl.' },
+        { q: 'Jak se jmenoval americký sitcom (1992-1999) s Paulem Reiserem a Helen Hunt o nově sezdaném páru v New Yorku?', a: 'Mad About You', c: 'Před Helen Hunt v Cast Away, před Reiserem v Beverly Hills Cop. Romantická komedie v jedné apartmán.' },
+        { q: 'Jak se jmenoval americký seriál (1990-1995) o doktorovi z New Yorku, který se přestěhuje do Cicely v Aljaška mezi excentriky?', a: 'Severní expozice (Northern Exposure)', c: 'Maggie pilotka, Maurice bývalý astronaut, Chris DJ-básník. Whimsy v severním Američanství. Kult, který předbíhal dobu.' }
+      ],
+      bonus: { q: 'Jak se jmenoval americký sitcom (1982-1993) odehrávající se v bostonském baru, kde "všichni znají tvoje jméno"?', a: 'Cheers', c: 'Sam Malone, Norm! Cliff, Frasier (předtím sólo show). 11 sezón. Nejdéle nominovaný sitcom v historii Emmy.' }
+    },
+    /* V1 alt — České seriály */
+    {
+      questions: [
+        { q: 'Jak se jmenuje česká nostalgická série ČT (od 2009) ukazující rodinu Dvořákových od 1958 do současnosti?', a: 'Vyprávěj', c: 'Mahulena Bočanová, Pavel Kříž. Skoro celá generace prožila české dějiny touto rodinou. Komfortní nostalgie.' },
+        { q: 'Jak se jmenoval slavný česky sci-fi seriál ČT z 80s o lidech z budoucnosti, kteří přicestují do současnosti?', a: 'Návštěvníci', c: 'Slezský humor, futuristický kostým. Profesor Filip s otcem a synem. Sci-fi pro celou rodinu — generační klasika.' },
+        { q: 'Jak se jmenuje denní soap TV Nova vysílaný od roku 2005 — pražská ulice, soused, manželské problémy?', a: 'Ulice', c: 'Soap opera, který byla, je a bude. Tisíce dílů. Maminky v 14h hodin. Generace, která se Ulici vrátila kvůli starým rodičům.' },
+        { q: 'Jak se jmenoval česky sitcom TV Nova s Karlem Rodenem o nahrávacím studiu — kde herec hraje sám sebe v depresi?', a: 'Comeback', c: 'Karel Roden hraje "Karla Rodena". Meta humor, hraní s realitou. Český sitcom v nečekané kvalitě.' },
+        { q: 'Jak se jmenoval lekařský seriál TV Prima s Janou Štěpánkovou jako primářkou ortopedie?', a: 'Helena', c: 'První český lekařský seriál v komerčním formátu. Drama, romance, operační scény. Inspirace evidentně z amerických medical dramat.' },
+        { q: 'Jak se jmenuje česká talk show s Ester Janečkovou (od 2003), kde se předávají dopisy a vzkazy?', a: 'Pošta pro tebe', c: 'Slzy v každém díle. Příběhy o ztrátě, návratu, smíření. Janečková jako empatická prostředkyně.' },
+        { q: 'Jak se jmenuje česká soutěž ČT s morálně-detektivní kategoriií — moderátor Jan Kraus rozhoduje, kdo lže?', a: 'Nikdo není dokonalý', c: 'Tři hosté, jeden lže. Klasická pondělní zábava. Pak komediální show s otevřenými hosty.' },
+        { q: 'Jak se jmenoval česky seriál o vesnické dorovstí — staří hospodi, dědina, Šťastní vesničané?', a: 'Náves (TV Nova)', c: 'Slezský humor, dědinský život. Plno postav, plno hospod, plno drobných problémů. Komediální seriál pro střední generaci.' }
+      ],
+      bonus: { q: 'Jak se jmenovala česká verze americké show "Wheel of Fortune", kterou v 90s vysílala TV Nova?', a: 'Kolo štěstí', c: 'Vladimír Čech, Iva Hercíková. Otáčelo se kolem, kupovaly se písmena. Studené odpoledne, vy a babička u televize.' }
+    },
+    /* V2 alt — Reality show */
+    {
+      questions: [
+        { q: 'Jak se jmenovala česká reality show TV Prima 2009 — trosečníci na ostrově v Karibiku, hlasování o vyřazení?', a: 'Robinsonův ostrov', c: 'Český "Survivor". Marek Eben moderátor. Smyšlené konflikty, romance, alianty. Reality TV jako sport.' },
+        { q: 'Jak se jmenovala francouzská reality show, kde dva týmy bojují v pevnosti, klíče sbírají v komorách s tygry?', a: 'Pevnost Boyard (Fort Boyard)', c: 'Otec Fouras, Père Fouras s hádankami. Atlantská francouzská pevnost. Lazura, kterou pak kopírovaly všechny evropské stanice.' },
+        { q: 'Jak se jmenuje česká stavebně-renovační reality show TV Nova / TV Prima, kde se opravují domy?', a: 'Můj dům, můj hrad', c: 'Renovace, drama mezi manželi, milionové projekty. Český sen o bydlení v televizní formě.' },
+        { q: 'Jak se jmenovala česká verze X Factor, kterou TV Nova vysílala v letech 2014-2017?', a: 'X Factor Česko Slovensko', c: 'Slovenská spolupráce. Po fade-out Superstar. Stejný formát, jiná tlačítka. Generace nových hvězd, kterou si nikdo nepamatuje.' },
+        { q: 'Jak se jmenuje česká kuchařsko-vzdělávací show s Zdeňkem Pohlreichem, kde se hází chleby a nadává?', a: 'Ano, šéfe!', c: 'Pohlreich přichází do zkrachovalých restaurací, vyhazuje kuchaře, dělá pořádek. Kuchyňské drama v české podobě.' },
+        { q: 'Jak se jmenovala česká reality show o seznamování celebrit — TV Prima 2008+?', a: 'VyVolení', c: 'Po prvním VyVolení (2005) přišly další ročníky. Občanové ČR vs. celebrity. České reality TV evergreen.' },
+        { q: 'Jak se jmenuje česká pěvecká soutěž, kterou TV Nova vysílá od 2011 — porotci se ke zpěvákovi otočí, "Otoč se"?', a: 'Hlas Česko Slovensko (The Voice)', c: 'Pavel Habera, Bohuš Matuš, slovenští interpreti. Žárlivost mezi porotci. Pohádkový sběr talentů.' },
+        { q: 'Jak se jmenuje česká vědomostní soutěž ČT (od 2012) — moderátor Aleš Háma, čtyři otázky, čtyři odpovědi?', a: 'Máte slovo (Riskuj!)', c: 'Aleš Háma vystřídal jiné moderátory. Klasický český vědomostní formát. Vyhrávalo se málo, ale legrace bylo dost.' }
+      ],
+      bonus: { q: 'Jak se jmenovala česká taneční reality ČT, ve které celebrity tančí s profi tanečníky každou sobotu (od 2006)?', a: 'StarDance', c: 'Marek Eben hlavní moderátor. Slzy, zlomené kotníky, miliony hlasů SMS. Klasika sobotního večera pro maminky.' }
+    },
+    /* V3 alt — Animáce dospělí */
+    {
+      questions: [
+        { q: 'Jak se jmenoval slavný groteskní animovaný seriál Nickelodeon 1991-1996 o hloupém kocourovi a šíleném chihuahuovi?', a: 'Ren & Stimpy (Ren a Stimpy)', c: 'John Kricfalusi. Drsná animace na hranici grossness. Asketický humor, dospělé vtipy v dětské show. Kult, dnes problematický.' },
+        { q: 'Jak se jmenoval HBO animovaný superhrdinský seriál 1997-1999 o démonickém zlém hrdinovi v městě New York?', a: 'Spawn', c: 'Todd McFarlane. Mature animation pro adultní publikum. Tmavá, brutální, definujicí "adult animated TV" před Family Guy.' },
+        { q: 'Jak se jmenoval americký MTV antologický kreslený seriál 1991-1995, který představil "Æon Flux" a "Beavis a Butt-Head"?', a: 'Liquid Television', c: 'Showcase pro experimentální animaci. Bez něj by neexistoval Cartoon Network adult swim. Předbíhal dobu.' },
+        { q: 'Jak se jmenoval Comedy Central kreslený seriál 2004-2007 o reality-show postaviček (parodie Cartoon Network/Disney)?', a: 'Drawn Together', c: 'Princezna Klára, Foxxy Love, Captain Hero. Šokující dospělý humor. Tlumení dospělé animace, kdy YouTube ještě nebyl.' },
+        { q: 'Jak se jmenoval kresleny seriál Cartoon Network Adult Swim z 2000 o tří fast food postavičkách v New Jersey?', a: 'Aqua Teen Hunger Force', c: 'Master Shake (shake), Frylock (smažené hranolky), Meatwad (kulička masa). Surrealistický humor. Kult mezi nightowls.' },
+        { q: 'Jak se jmenoval kreslený sitcom Cartoon Network 2000-2005 o vědcích na podvodní stanici?', a: 'Sealab 2021', c: 'Adult Swim. Captain Murphy, Dr. Quinn. Dialog-heavy, absurdní humor. Originální záběry z reklamních 70s edukačních filmů.' },
+        { q: 'Jak se jmenoval ABC kreslený sitcom 1994-1995, parodie filmového kritika a jeho rodiny?', a: 'The Critic', c: 'Jay Sherman (Jon Lovitz). Tvůrci Mike Reiss a Al Jean (Simpsons writers). "It stinks!" Kult, brzký konec.' },
+        { q: 'Jak se jmenoval kresleny sitcom 1999-2000 (Animaniacs spinoff) o teenageru a jeho přátelích v Mission Hill v Los Angeles?', a: 'Mission Hill', c: 'Andy French, Kevin French. Mike Yarms (Yatchko Mileta). Drsná humorná próza. Cancellation criminals — měl běžet dál.' }
+      ],
+      bonus: { q: 'Jak se jmenoval kreslený seriál UPN/Adult Swim 1999-2004 o dětech, které natáčejí filmy s podomáckou kamerou?', a: 'Home Movies', c: 'Brendon Small. Predecessor "Bob\'s Burgers". Postprodukce mírně lo-fi. Pak HW Bach... ne, byl to "Metalocalypse" později.' }
+    },
+    /* V4 alt — Akční a fantasy seriály */
+    {
+      questions: [
+        { q: 'Jak se jmenoval americký fantasy seriál (1998-2006) o třech sestrách Halliwellových v San Franciscu — čarodějky?', a: 'Čarodějky (Charmed)', c: 'Pondělí večer, mýdlová opera s magií. Prue, Piper, Phoebe, později Paige. Brewing strážci nadpřirozeného hlavního města.' },
+        { q: 'Jak se jmenoval Star Trek spinoff (1993-1999) odehrávající se na vesmírné stanici nad Bajorem?', a: 'Star Trek: Deep Space Nine (DS9)', c: 'Komandér Sisko. Quark, Jadzia Dax, Worf. Tmavší, válečnější Star Trek. Mnozí fanoušci ho považují za nejlepší.' },
+        { q: 'Jak se jmenoval Star Trek seriál 1987-1994 — kapitán Picard a USS Enterprise NCC-1701-D?', a: 'Star Trek: The Next Generation (TNG)', c: 'Patrick Stewart jako Jean-Luc Picard. "Make it so." Star Trek pro novou generaci, který přebudoval franšízu.' },
+        { q: 'Jak se jmenoval americký sci-fi seriál (1989-1993) o vědcovi Samovi Beckettovi, který cestuje časem v jiných tělech?', a: 'Quantum Leap', c: 'Scott Bakula jako Sam, Dean Stockwell jako Al (hologram). "Oh boy!" Každý díl jiná éra, jiné tělo. Sci-fi klasika.' },
+        { q: 'Jak se jmenoval americký fantasy seriál (1995-1999) o synovi Dia, který bojuje s mytickými stvořeními?', a: 'Hercules: The Legendary Journeys', c: 'Kevin Sorbo. Spin-off: Xena. Antický svět v televizní podobě. Kult mezi nostalgickými fanoušky 90s.' },
+        { q: 'Jak se jmenoval americký akční seriál (1993-2001) o texaském rangerovi s bojovými uměními — Chuck Norris?', a: 'Walker, Texas Ranger', c: 'Cordell Walker. Houkáním Texas honky-tonk. Chuck Norris kopanec, Chuck Norris memes — všechno z této show.' },
+        { q: 'Jak se jmenoval kanadský sci-fi seriál (1997-2001) o ženě-špiónce v tajné organizaci Section One?', a: 'La Femme Nikita', c: 'Peta Wilson jako Nikita. Akce, intriky, hi-tech. Předchůdce "Alias" a "Nikita" remake (2010).' },
+        { q: 'Jak se jmenoval Fox sci-fi seriál (2000-2002) s Jessicou Albou — geneticky upravená supervojákka v Seattle?', a: 'Dark Angel', c: 'Max (Jessica Alba), Logan Cale (Michael Weatherly). Cyberpunk dystopie. Jessicy Alby vrhol do hvězdy. James Cameron producent.' }
+      ],
+      bonus: { q: 'Jak se jmenoval americký teen sci-fi seriál (1999-2002) o mimozemských teenagerů v Roswell, New Mexico?', a: 'Roswell', c: 'Liz Parker, Max Evans. Aliens jako střední škola. Roswell incident 1947 jako základ. Reboot CW 2019 — bez staré chvíle.' }
+    }
+  ],
+
+  tech: [
+    /* V0 alt — Internet/mobily */
+    {
+      questions: [
+        { q: 'Jak se jmenoval americký internetový portál a search engine, který v 90s byl nejnavštěvovanější (Jerry Yang, David Filo)?', a: 'Yahoo!', c: 'Stanfordští studenti 1994. "Yet Another Hierarchical Officious Oracle." Před Googlem největší. Pak ztratil válku. Verizon ho koupil 2017 za 4.5 miliardy — pak prodal.' },
+        { q: 'Jak se jmenovala bezplatná emailová služba, kterou Microsoft koupil v 1997 a integroval do MSN?', a: 'Hotmail', c: 'Sabeer Bhatia, Jack Smith. První velký webový email. Microsoft za 400 milionů. Stal se Outlook.com v 2012.' },
+        { q: 'Jak se jmenovala videokonferenční technologie z 1992 (Cornell), předchůdce Skype a webcam komunikace?', a: 'CU-SeeMe', c: 'Tim Dorcey. Černobílá video komprese, modem rychlosti. První video chat na světě. Předbíhal dobu o 15 let.' },
+        { q: 'Jak se zkráceně nazývá optické záznamové médium z 90s — schopné psát data víc než jednou (Compact Disc-Rewritable)?', a: 'CD-RW', c: 'Disket 1.44 MB byla 90s norma. CD-R až 700 MB. CD-RW — opakovaně přepisovatelné. Burned mixtapes éra.' },
+        { q: 'Jak se zkráceně nazývá optické záznamové médium pro filmy a data z 90s — kapacita 4.7 GB (Digital Versatile Disc)?', a: 'DVD', c: 'Od 1997. Sony, Panasonic, Toshiba. Konec VHS, začátek HD éry. Pak Blu-ray, pak streaming. Hierarchie médií.' },
+        { q: 'Jak se nazývalo malé přenosné USB úložiště, které se v 00s rozšířilo (Trek Technology, IBM 2000)?', a: 'USB flash drive (flashka)', c: 'IBM DiskOnKey, Lexar JumpDrive. Sběh disket. Generace 00s znala "USB klíčenku" jako základní vybavení.' },
+        { q: 'Jak se jmenuje bezdrátová technologie krátkého dosahu z 1994 (Ericsson) — pojmenovaná po dánském králi 10. století?', a: 'Bluetooth', c: 'Harald "Bluetooth" Gormsson. Logo: runy H + B. Spojuje sluchátka, klávesnice, myši. Bluetooth 1.0 v 1999, dnes 5.x.' },
+        { q: 'Jak se jmenuje bezdrátový internet, který IEEE 802.11 standardizoval v 1997 — populární od 00s?', a: 'Wi-Fi', c: 'Wireless Fidelity (nebo prostě WiFi). 802.11b (1999), 802.11g, n, ac, ax. Generační change v komunikaci.' }
+      ],
+      bonus: { q: 'Jak se jmenoval první satelitní telefon, který v 1998 měl globální pokrytí (66 satelitů LEO, Motorola)?', a: 'Iridium', c: 'Cílili na obchodníky a horská záchranná služby. Po 9 měsících bankrot — moc drahé. Pak vykoupili a Iridium funguje dodnes.' }
+    },
+    /* V1 alt — Mobily, operátoři */
+    {
+      questions: [
+        { q: 'Jak se jmenoval populární barevný flip phone Sony Ericsson z 2002 — joystick navigace, MMS zprávy?', a: 'Sony Ericsson T68i', c: 'Konec Ericsson, začátek Sony Ericsson. Modrý display, GPRS, Bluetooth. Pro mladé byznysmeny, kteří chtěli vypadat dospěle.' },
+        { q: 'Jak se jmenoval populární Siemens mobilní telefon z 2003 — robustní, gumový obal, "outdoor"?', a: 'Siemens M55', c: 'Žlutomodrý design, anténa nahoře. Pro stavebáře a outdoor lidi. Pak Siemens skončil s mobily 2005.' },
+        { q: 'Jak se jmenoval velmi tenký Nokia model z 2002 — flat, černý, koníček mladých?', a: 'Nokia 8210', c: 'Slim, sexy, drahý. Od 2000. Pro lidi, kteří potřebovali, aby mobil vlezl do kapsy košile.' },
+        { q: 'Jak se jmenoval první Samsung mobilní telefon, který se v ČR rozšířil v 90s/00s — výrazný design?', a: 'Samsung SGH-A100', c: 'Z roku 1999. Velký display, infračervený port. Samsung v 90s ještě nebyl král — ale začínal.' },
+        { q: 'Jak se jmenoval populární Alcatel telefon z 1998 — jednoduché GSM zařízení s velkými klávesami?', a: 'Alcatel One Touch Easy', c: 'Pro babičky a děti. Velké klávesy, hlasité vyzvánění, jednoduché menu. Alcatel jako francouzský underdog.' },
+        { q: 'Jak se jmenovala psaní zkratka, kterou Nokia popularizovala v 90s — "predictive text" pro psaní SMS rychleji?', a: 'T9 (Text on 9 keys)', c: 'Nuance Communications. "Hello" jako 4-3-5-5-6. Generace, která uměla psát SMS bez koukání na klávesnici.' },
+        { q: 'Jak se jmenoval první veřejný hotspot/WiFi v České republice (cca 2002-2003) — operátorský produkt?', a: 'T-Zones (T-Mobile)', c: 'První Wi-Fi v kavárnách, na nádražích. Drahý, pomalý, ale ohromně cool. Předchůdce free WiFi.' },
+        { q: 'Jak se nazývá vibrační upozornění v mobilu, populární od konce 90s — alternativa k vyzvánění?', a: 'Vibrace (vibration alert)', c: 'První Nokia s vibracemi: Nokia 6110 (1997). Před tím jen vyzvánění. Šeptavé "ble-ble-ble" v kapse — generační podpis.' }
+      ],
+      bonus: { q: 'Jak se jmenoval populární PDA (osobní digitální asistent) z konce 90s — předchůdce smartphonu, stylus na dotykový displej?', a: 'PalmPilot (Palm Pilot)', c: 'Palm Inc. od 1996. Graffiti psací systém. Kalendář, kontakty, hry. Pak BlackBerry, pak iPhone. Postupný cycle of life.' }
+    },
+    /* V2 alt — Internet weby */
+    {
+      questions: [
+        { q: 'Jak se jmenovaly slavné AOL CD-ROMy z 90s, které chodily poštou s nabídkou X hodin internetu zdarma?', a: 'AOL (America Online) CD', c: 'CD-ROM v každém americkém domě. AOL utratil 350 milionů dolarů na CD. Pak je všichni používali jako podtácky a frisbee.' },
+        { q: 'Jak se jmenovala populární služba pro tvorbu domácích stránek 90s (1994-2009), nyní vypnutá Yahoo!?', a: 'Geocities', c: 'Web 1.0 v plné kráse. Animované GIFy, MIDI music, neonové texty. Yahoo! koupil za 3.6 miliardy, pak zabil v 2009. Generační ztráta.' },
+        { q: 'Jak se jmenovala konkurence Geocities pro tvorbu domácích stránek 90s — sponzoring "Lycos"?', a: 'Angelfire', c: 'Free web hosting. Od 1996. Lycos koupil za 67 milionů v 1998. Pak — stejně jako Geocities — pomalu uschl.' },
+        { q: 'Jak se jmenoval populární vyhledávač 90s, dominantní před Google — DEC research?', a: 'AltaVista', c: 'Od 1995. První multilanguage search. Pak ho koupila Compaq, pak Yahoo!. Zavřeli ho v 2013. Google vyhrál vše.' },
+        { q: 'Jak se jmenoval populární otázkový search engine 00s — "Jak se zeptat..."?', a: 'Ask Jeeves (později Ask.com)', c: 'Butler Jeeves jako maskot. Konkurence Google. Po nějaké době ztratili a stali se z toho regular search engine.' },
+        { q: 'Jak se jmenoval populární americký vyhledávač/portál 90s, název znamenal "vlk" v latině?', a: 'Lycos', c: 'Z roku 1994 (Carnegie Mellon University). Před Google a Yahoo! to byl jeden z hlavních. Multilingual, kvalitní. Skončil dlouho.' },
+        { q: 'Jak se jmenoval populární instant messenger Microsoftu z 1999 (předchůdce Windows Live Messenger)?', a: 'MSN Messenger', c: 'Před tím se říkalo "Microsoft Messenger." Smiley, nudge, file transfer. Generace, která ho ve škole používala místo pozornosti.' },
+        { q: 'Jak se nazývaly skupiny webů propojené odkazy do "kruhu" (popular v 90s) — vlastní téma, sdílené traffic?', a: 'Webring', c: 'Web 1.0 sociální struktura. Kruh webů o vlcích, vlcích a vlcích. Pak Google PageRank ho zabil — odkazy bez kontextu.' }
+      ],
+      bonus: { q: 'Jak se jmenoval populární DNS-based decentralizovaný komunikační protokol z 80s/90s (předchůdce moderního webu)?', a: 'Usenet', c: 'Newsgroups (rec.arts.movies, alt.sex, comp.lang.python). Před forem, před Redditem. Pak Google Groups, který Usenet pohřbil v 00s.' }
+    },
+    /* V3 alt — Software */
+    {
+      questions: [
+        { q: 'Jak se jmenoval populární textový editor 80s/90s (Corel od 1996) — Borland, DOS-based?', a: 'WordPerfect', c: 'V 80s král textových editorů. WordPerfect pro DOS — "Reveal Codes" funkce. Pak Microsoft Word převzal trh.' },
+        { q: 'Jak se jmenuje slavný grafický editor Adobe Systems (od 1990) — synonymum pro úpravu fotografií?', a: 'Adobe Photoshop', c: '"Photoshopnout" se stalo slovesem. Layery, masky, filtry. Drahá licence — pirátská verze v každém českém domě.' },
+        { q: 'Jak se jmenoval populární přehrávač streamovaného audia/videa 90s/00s — slavný "buffering" pomalý web?', a: 'RealPlayer', c: '.rm soubory. Před Flash, před YouTube. Buffering se stal symbolem 56k modemu. RealPlayer dodnes existuje — kupodivu.' },
+        { q: 'Jak se jmenovala slavná id Software FPS hra z 1996 — sequel Doom, kompletní 3D engine?', a: 'Quake', c: 'První pravdivá 3D FPS hra. John Carmack engine. Multiplayer revoluce, esports začátek. Trent Reznor hudba.' },
+        { q: 'Jak se jmenoval populární instant messenger 90s (1996, Mirabilis) — pětimístné UIN čísla, "Uh-oh!"?', a: 'ICQ', c: '"I Seek You." Před MSN. Czech young generation 90s/00s. AOL koupil v 1998. Mail.ru pak v 2010. Dodnes občas používaný.' },
+        { q: 'Jak se jmenoval multi-protokol instant messenger 00s, který sjednotil ICQ, MSN, Yahoo!, AIM, IRC?', a: 'Trillian', c: 'Cerulean Studios. Pro lidi, co měli kontakty na všech sítích současně. Drahá premium verze. Skype pak zabil to vše.' },
+        { q: 'Jak se jmenoval populární IRC klient z 90s pro Windows — Khaled Mardam-Bey, shareware?', a: 'mIRC', c: 'IRC v 90s = chat. mIRC nejpopulárnější klient. /join #channel, /msg user. Hackerská kultura, warez scéna, dospívání.' },
+        { q: 'Jak se jmenoval defaultní textový editor Windows od Windows 1.0 — minimální funkce, .txt soubory?', a: 'Notepad', c: 'Bez formátování, bez funkcí. Programátoři ho používali na rychlé poznámky. A pro psaní viru jednoho víkendu.' }
+      ],
+      bonus: { q: 'Jak se jmenoval populární čínský email klient z 90s/00s, který byl víc populární v Asii než Outlook?', a: 'Foxmail', c: 'Aaron Zhang vytvořil 1996. Tencent ho koupil 2005. Předchůdce Foxmail Email v Číně. Outside Asia málokdo zná.' }
+    },
+    /* V4 alt — Tech osobnosti */
+    {
+      questions: [
+        { q: 'Jak se jmenuje americký podnikatel, zakladatel Oracle Corporation (1977) — databázový gigant, miliardář?', a: 'Larry Ellison', c: 'Sailing, helikoptéry, ostrov Lanai (Hawaii — koupil 98%). Soupeř Billa Gatese 80s/90s. Dnes 5. nejbohatší člověk planety.' },
+        { q: 'Jak se jmenuje vynálezce skriptovacího jazyka Perl (1987), znám "There\'s more than one way to do it"?', a: 'Larry Wall', c: 'NASA programmer. Programovací jazyk vytvořený jako "praktický" — nikoli "elegantní". Symbol open-source 90s.' },
+        { q: 'Jak se jmenuje americký programátor, vynálezce JavaScriptu (1995, 10 dní v Netscape)?', a: 'Brendan Eich', c: 'JavaScript v 10 dnech. Pak Mozilla CEO (kontroverzně). Pak Brave browser. Tvůrce jazyka, kterým běží celý web.' },
+        { q: 'Jak se jmenuje dánský počítačový vědec, autor programovacího jazyka C++ (1979) — od Bell Labs?', a: 'Bjarne Stroustrup', c: 'C s objekty. C++ pro velké systémy. Aarhus, AT&T Bell Labs, Texas A&M. Generace inženýrů ho proklínala a milovala.' },
+        { q: 'Jak se jmenuje nizozemský programátor, vynálezce jazyka Python (1991)?', a: 'Guido van Rossum', c: '"Benevolent Dictator For Life" Pythonu (do 2018). Indentation matters. Pak Microsoft inženýr. Jazyk dnes #1 na světě.' },
+        { q: 'Jak se jmenuje kanadský programátor, vynálezce jazyka Java (1995) — Sun Microsystems?', a: 'James Gosling', c: 'Write Once, Run Anywhere. Java mateský duch. Pak Oracle Java acquisitions, drama, právní soudy. Programovací jazyk pro enterprise.' },
+        { q: 'Jak se jmenuje nizozemský informatik, autor operačního systému Minix — inspirace pro Linuse Torvaldse?', a: 'Andrew Tanenbaum', c: 'VU Amsterdam profesor. Minix jako učební OS. Torvalds ho vzal a vyrobil Linux. Historická vědecká inspirace.' },
+        { q: 'Jak se jmenuje americký programátor, spoluzakladatel id Software, autor Doomu a Quake — VR pioneer?', a: 'John Carmack', c: 'Hardcore programátor 90s. Pak Oculus VR CTO. Pak AGI research. Génius graphics engineering pro celé tisíciletí.' }
+      ],
+      bonus: { q: 'Jak se jmenuje americká podnikatelka, dlouholetá CEO YouTube (2014-2023) — sestra manželky Sergeie Brina?', a: 'Susan Wojcicki', c: 'Google #16 zaměstnanec. Pronajala garáž Stanford founderům 1998. Pak YouTube CEO 9 let. Sestra Anne, manželky Brina.' }
+    }
+  ],
+
+  jidlo: [
+    /* V0 alt — Sladkosti */
+    {
+      questions: [
+        { q: 'Jaké slavné holandské mentolové bonbóny v rolích se prodávají od 1950 — bílé tabletky s "M" v středu?', a: 'Mentos', c: '"The Freshmaker!" Reklama Mentos + Coca-Cola = fontána. Generace dětí dělala vědecké pokusy v kuchyni.' },
+        { q: 'Jaké španělské lízátko (od 1958) má charakteristický kulatý tvar a logem od Salvadora Dalího (sic!)?', a: 'Chupa Chups', c: 'Enric Bernat. Dalí designoval logo 1969. "Chups" znamená "chutnat". Léto, dovolená, plážová klasika.' },
+        { q: 'Jaká kokosová tyčinka Mars Inc. má slogan "Taste of paradise" — bílé kokosové nudle uvnitř, čokoláda venku?', a: 'Bounty', c: 'Modré balení s kokosovou palmou. Marketing pro pláž a léto. Generace, která ji znala z reklam, ji dodnes kupuje na cesty.' },
+        { q: 'Jaké barevné cukrové bonbóny Mars Inc. mají slogan "Taste the Rainbow" a každá barva má svou ovocnou chuť?', a: 'Skittles', c: 'Červená jahoda, oranžová pomeranč, žlutá citron, zelená limetka, fialová hroznové. A pak ty "Wildberry" zelené. Pochroumaný jazyk po hodině pojídání.' },
+        { q: 'Jaké německé karamelové bonbóny s logem hodného dědečka jsou tu od 1903?', a: 'Werther\'s Original', c: '"From the moment I was a wee lad..." Reklama s dědečkem. Karamel, máslo, smetana. Babičky každého z nás je měly v kabelce.' },
+        { q: 'Jaká americká značka žvýkaček (od 1891) má klasické modré obaly s "double mint" a "spearmint"?', a: 'Wrigley\'s', c: 'William Wrigley. Wrigley Field (Chicago Cubs) baseball stadion. Žvýkačky pro každého věku. Mars Inc. ji koupila 2008.' },
+        { q: 'Jaké malé bílé mintové bonbóny v plastových krabičkách od Ferrero — klikací uzávěr?', a: 'Tic Tac', c: 'Italské, od 1969. Klikací krabičky, dva při jednom kliknutí. "Less than 2 calories per Tic Tac" — slogan, kterým FDA nesouhlasilo.' },
+        { q: 'Jaká česká zmrzlina na tyčince — vanilková se zlato-hnědým obalem ZJP/Eskimo?', a: 'Eskimo', c: 'Polárek, Polární zmrzlina, Eskimo. Klasika české zmrzliny. Český název pro "Eskymák" — dnes politicky problematický.' }
+      ],
+      bonus: { q: 'Jaké britské mintové bonbóny mají charakteristický tvar — kulatý s dírou uprostřed (Nestlé od 1948)?', a: 'Polo (Polo mints)', c: '"The mint with the hole." Konkurence Life Savers (USA). Polo s dírkou = britský engineering. Dvě varianty: silné a normální.' }
+    },
+    /* V1 alt — Nápoje */
+    {
+      questions: [
+        { q: 'Jaký americký citronovo-limetkový nápoj 7-Up má slogan "Make 7 Up Yours" a charakteristickou zelenou láhev?', a: '7 Up', c: 'Charles Leiper Grigg 1929. Původně lithia v receptu (skutečně). "Uncola" v 60s/70s. Dnes Keurig Dr Pepper.' },
+        { q: 'Jaký pomerančový nápoj Coca-Cola Company se prodává v ČR od 90s — slogan "Fanta-stická chuť"?', a: 'Fanta', c: 'Vznikla v Coca-Cola Germany 1940 (kvůli válce nedostatek surovin USA). "Fantasie" → Fanta. Dnes nejprodávanější Coca-Cola brand mimo coly.' },
+        { q: 'Jaký bezbarvý citronovo-limetkový nápoj Coca-Cola Company konkuruje 7-Up?', a: 'Sprite', c: 'Od 1961. "Obey Your Thirst" slogan 90s. Charakteristická zelená limetková lahev. Hip-hop reklamy 00s — Lil\' Kim, Kobe Bryant.' },
+        { q: 'Jaký pomerančový nápoj Pepsi Cola konkuruje Fantě — populární v 90s/00s?', a: 'Mirinda', c: 'Pepsi brand od 1959. V ČR populární v 90s. Žlutý, růžový, jablečný — různé příchutě. Pak Fanta vyhrála válku.' },
+        { q: 'Jaký britský tonikový nápoj (originál pro G&T koktejly) má charakteristickou trpkou chuť — od 1783?', a: 'Schweppes', c: 'Jacob Schweppe švýcarský klenotník. Originální carbonated water. Bitter Lemon, Indian Tonic Water. Klasika u kávy nebo s ginem.' },
+        { q: 'Jaký americký nápoj s charakteristickou červeno-marronovou chutí (od 1885, Texas) je nejstarší soda v USA?', a: 'Dr Pepper', c: '23 příchutí. Nejstarší vyráběná soda v USA. Pepsi distribuuje v některých regionech. V ČR málo známý — outlier.' },
+        { q: 'Jaký americký nápoj s charakteristickou citronově-grepfruitovou chutí byl populární u skejťáků a gamerů 00s?', a: 'Mountain Dew', c: 'PepsiCo. Caffeine and citrus. "Do the Dew." Marketing for extreme sports, gaming. Generace 00s americké teenager kultury.' },
+        { q: 'Jak se v Česku tradičně nazývají citrónová limonáda s bublinkami — typické na výletech, "v Lhotce u kapličky"?', a: 'Limonáda (citronáda)', c: 'Klasická česká bublinková limonáda. Tradiční značky: Kofola, Tonic, později Kobylka. Dětský nápoj na výletech.' }
+      ],
+      bonus: { q: 'Jaký kanadský zázvorový nápoj s charakteristickou zelenou láhví je tu od 1907 (slogan "Schhh")?', a: 'Canada Dry (Ginger Ale)', c: 'John J. McLaughlin Toronto. Ginger ale pro koktejly. V USA proti nevolnosti — letecké společnosti ho dávaly cestujícím.' }
+    },
+    /* V2 alt — Slané/fast food */
+    {
+      questions: [
+        { q: 'Jaký americký casual dining řetězec s charakteristickými červeno-bílými pruhy a "Friday afternoon" tématem?', a: 'TGI Fridays', c: '"Thank God It\'s Friday" (1965). První masová casual dining. Cocktail bar, americká jídla. V ČR otevřeli a pak zavřeli.' },
+        { q: 'Jaký americký řetězec restaurantů s hudební tématikou a rock memorabilia na stěnách (Hard ___ Cafe)?', a: 'Hard Rock Cafe', c: 'Od 1971 v Londýně. Souvenir trička, kytary Hendrixe na stěně. Pražská pobočka — turistická klasika 00s.' },
+        { q: 'Jaký kontroverzní americký řetězec s waitressy v krátkých plavkách a chicken wings (slovo "sovičky")?', a: 'Hooters', c: 'Florida 1983. "Delightfully tacky, yet unrefined." Reklama, kterou by dnes nikdo neudělal. V ČR krátce zkusili — neuspěli.' },
+        { q: 'Jaký italský casual dining řetězec — italské jídlo, neomezené salátové bary a chleba grissini?', a: 'Olive Garden', c: 'Darden Restaurants. "When you\'re here, you\'re family." Generic italské jídlo pro americké rodiny. Endless breadsticks legend.' },
+        { q: 'Jaký americký fast food (od 1969) s frecsh-never-frozen burgery a zelenou vlasatou rusovlasou maskotkou?', a: 'Wendy\'s', c: 'Dave Thomas. Wendy = dcera Dave. "Where\'s the beef?" 80s reklama. Square hamburgers — "we don\'t cut corners."' },
+        { q: 'Jaký americký pizzerie řetězec s charakteristickou "30 minutes or it\'s free" politikou v 80s/90s?', a: 'Domino\'s Pizza', c: '"Avoid The Noid!" 90s reklamy. 30-min záruka zrušená 1993 po smrtelných nehodách řidičů. Marketing as a casualty.' },
+        { q: 'Jaký americký pizzerie řetězec, konkurence Domino\'s a Pizza Hut — slogan "Better Ingredients. Better Pizza"?', a: 'Papa John\'s', c: 'John Schnatter. NFL sponzor. Kontroverze 2018 (rasistický komentář). Cancel culture casualty.' },
+        { q: 'Jaký americký fast food řetězec s mexickým jídlem (burritos, tacos) — "Food with Integrity" slogan?', a: 'Chipotle', c: 'Steve Ells 1993, Denver. Fresh ingredients, build your own. McDonald\'s investoval 1998-2006. Pak Chipotle samostatně rostl.' }
+      ],
+      bonus: { q: 'Jaký americký fast food řetězec s kalifornským kultem — "Animal Style" tajné menu, Double-Double burger?', a: 'In-N-Out Burger', c: 'Od 1948 Kalifornie. Family-owned. Jen v západních US státech. Generace Californských dětí na něm vyrostla. Fanouškovský kult.' }
+    },
+    /* V3 alt — Cukrovinky svět */
+    {
+      questions: [
+        { q: 'Jak se anglicky/jinak nazývají bonbóny Smarties v jiných zemích — americká verze je úplně jiný produkt?', a: 'Smarties (USA = jiné, podobné Lentilkám)', c: 'V UK + Evropě Smarties = barevné čokoládové bonbóny. V USA Smarties = kyselé barevné tabletky. Nikdy je nezaměňte.' },
+        { q: 'Jaké americké čokoládové kousky s arašídovým máslem uvnitř — od 1928 (H.B. Reese)?', a: 'Reese\'s Peanut Butter Cups', c: 'Hershey\'s portfolio. "Two great tastes that taste great together." Halloween klasika. Američani je milují, my Evropan moc ne.' },
+        { q: 'Jaké slavné Hershey\'s čokoládové kapky ve stříbrných nebo zlatých papírcích (od 1907) — slza tvaru?', a: 'Hershey\'s Kisses', c: 'Vrcholek "vlajka" s textem "KISSES". Vyrábí se v Pensylvánii. Pětkrát za den vyrobí 70 milionů. Industrial sweetness.' },
+        { q: 'Jaké velikonoční Cadbury čokoládové vajíčko (od 1923) je plněné krémem připomínajícím žloutek?', a: 'Cadbury Creme Egg', c: '"How do you eat yours?" Klasická britská velikonoční sladkost. 200 milionů ročně. Generace dětí debata: kousnout, nebo vyklepávat.' },
+        { q: 'Jaká britská čokoláda s mátovou náplní v tenkých čtvercích (Nestlé) — slovo "After ___" v názvu?', a: 'After Eight', c: 'After Eight Mints. Z roku 1962. Restaurace v "dobré domácnosti" je servírovaly s kávou. Britská uppity klasika.' },
+        { q: 'Jaké italské oříšky v čokoládě s waflovou krustou (Ferrero) — slogan "Ambasador" obleku?', a: 'Ferrero Rocher', c: 'Diplomat\'s party. Vrstvy: lískový oříšek, krém, oplatka, čokoláda, sekané ořechy. Marketing pro elegantní příležitosti.' },
+        { q: 'Jaké americké zmrzlina-sendvič jednoho jména — dvě sušenky a zmrzlina mezi nimi?', a: 'Ice cream sandwich (Eskimo Pie?)', c: 'Klasický americký dezert. Zmrzlina mezi dvěma čokoládovými sušenkami. Letní vzpomínka generace.' },
+        { q: 'Jak se jmenuje belgická čokoládová značka, která v 90s/00s ovládala duty-free obchody na letištích?', a: 'Godiva', c: 'Od 1926 Belgie. Pojmenovaná po Lady Godiva. Luxusní obal, pralinka. Pak Yıldız Holding (Turecko). Letiště, dárky, čokoláda.' }
+      ],
+      bonus: { q: 'Jaké italské Ferrero pralinky obsahují celý třešňový plod naloužený v likéru?', a: 'Mon Chéri', c: 'Třešeň naloužená v kirsch (třešňový likér). Dospělí ji jedli, dětem se kupovaly pro vzhled — pak prskaly nad alkoholem.' }
+    },
+    /* V4 alt — Cizí kuchyně */
+    {
+      questions: [
+        { q: 'Jaké blízkovýchodní fritované koule z cizrny, podávané v pita chlebu se zeleninou a tahini omáčkou?', a: 'Falafel', c: 'Egypt, Izrael, Liban. V Praze jeden falafel za 90 Kč. Vegetariánský zachránce. Skvělé jako pozdně-večerní jídlo.' },
+        { q: 'Jaká blízkovýchodní pasta ze sezamových semínek je základem hummusu, baba ghanoush a dalších?', a: 'Tahini (tahin)', c: 'Sezamová pasta. Hořkavá chuť. V Česku v 90s neznámá, v 10s základní bio obchodu položka.' },
+        { q: 'Jaký řecký pokrm — kousky grilovaného masa na jehlici, podávané s pita chlebem a tzatziki?', a: 'Souvlaki (Gyros)', c: 'Souvlaki = na jehlici. Gyros = z velkého rotujícího bloku masa. Řecká fast food kategorie. Athény, plage, večer.' },
+        { q: 'Jaký španělský pokrm — žlutá rýže s mořskými plody nebo masem, vařená v plochém pánvi?', a: 'Paella', c: 'Valencie. Žlutá od šafránu. Tradičně se vaří v ohni v lese. V Česku špatné napodobeniny — pravá je v Španělsku.' },
+        { q: 'Jaký italský pokrm — krémová rýže vařená v vývaru, s parmazánem a šafránem?', a: 'Risotto', c: 'Severní Itálie. Risotto alla milanese (šafrán), risotto ai funghi (houby). Stálé míchání po dobu vaření. Italian gastronomy basics.' },
+        { q: 'Jaký italský pokrm — vrstvy těstovinového listu, mleté maso, omáčka, sýr — pečené v troubě?', a: 'Lasagne', c: 'Bologna, Italy. Béchamel, ragù, parmesan. Garfield favorite. Lasagne v každé italské restauraci v ČR.' },
+        { q: 'Jaký italský předkrm — opékaný chléb s rajčaty, česnekem a bazalkou?', a: 'Bruschetta', c: 'Slovo "bruscare" = grilovat. Toskánsko, Lazio. Před hlavním jídlem. V Česku v 00s jako moderní jídlo.' },
+        { q: 'Jaké španělské malé předkrmy, podávané jako celé jídlo (sýry, šunky, olivy, krevety)?', a: 'Tapas', c: 'Andalusie tradice. "Tapas bar" = jídla pro mnoho lidí na malé porce. Sherry pití. Spanish way of eating.' }
+      ],
+      bonus: { q: 'Jaké thajské nudlové jídlo s tamarindem, arašídy a vajíčkem — populární v Asia food courts?', a: 'Pad Thai', c: 'Thai national dish. 1930s vytvořen jako "modern Thai". V Česku v 00s jako "exotická" volba. Dnes každý food court.' }
+    }
+  ],
+
+  filmy: [
+    /* V0 alt — Hollywood klasika 90s */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavný film Franka Darabonta z roku 1994 podle románu Stephena Kinga — vězeň Andy Dufresne?', a: 'Vykoupení z věznice Shawshank (The Shawshank Redemption)', c: 'Tim Robbins, Morgan Freeman. Při vydání flop. Pak nejhodnocenější film na IMDb. Andy a Red, věznění jako přátelství.' },
+        { q: 'Jak se jmenuje slavný film Martina Scorseseho z roku 1990 o italsko-americké mafii v New Yorku (Henry Hill)?', a: 'Mafiáni (Goodfellas)', c: 'Ray Liotta, Robert De Niro, Joe Pesci. Voice-over od Henry Hilla. Pesci "Funny how?" scéna. Klasika gangsterského žánru.' },
+        { q: 'Jak se jmenuje slavný film Davida Finchera z roku 1999 s Bradem Pittem a Edwardem Nortonem — boj proti spotřebitelství?', a: 'Klub rváčů (Fight Club)', c: '"The first rule of Fight Club..." Twist konce. Manifest Gen-X mužnosti. Pak interpretace jako satire o tom samém. Meta layers.' },
+        { q: 'Jak se jmenuje slavný film Stevena Spielberga z roku 1993 o německém průmyslníkovi, který zachránil 1100 Židů?', a: 'Schindlerův seznam (Schindler\'s List)', c: 'Černobílá kromě dívky v červeném kabátku. 7 Oscarů. Holocaust v komerčním kině. Spielberg konečně Oscar za režii.' },
+        { q: 'Jak se jmenuje slavný film Stevena Spielberga z roku 1998 o vylodění v Normandii — Tom Hanks?', a: 'Zachraňte vojína Ryana (Saving Private Ryan)', c: 'Otevírací 20 minut na pláži Omaha — definující válečnou cinematografii. Tom Hanks, Tom Sizemore, Matt Damon.' },
+        { q: 'Jak se jmenuje slavný film Ridleyho Scotta z roku 2000 s Russellem Crowem — římský generál a otrok-gladiátor?', a: 'Gladiátor (Gladiator)', c: '"Are you not entertained?" Maximus Decimus Meridius. 5 Oscarů včetně nejlepšího filmu. Sword & sandal epic revival.' },
+        { q: 'Jak se jmenuje slavný film Ron Howarda z roku 1995 s Tomem Hanksem o misi NASA Apollo 13 v 1970?', a: 'Apollo 13', c: '"Houston, we have a problem." Skutečný příběh vesmírné nehody. Tom Hanks, Kevin Bacon, Bill Paxton. Drama o navigaci v koreánské situaci.' },
+        { q: 'Jak se jmenuje slavný film Michaela Manna z roku 1995 s Robertem De Nirem a Alem Pacinem — zlatá éra crimewareu?', a: 'Heat', c: 'Vrcholná setkání De Niro vs. Pacino. Bank heist v centru LA. Drsná akce s emocemi. Cinema legend.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný film Bryana Singera z roku 1995 s Kevinem Spaceym — pět zločinců, plot twist, Keyser Söze?', a: 'Obvyklí podezřelí (The Usual Suspects)', c: 'Oscar za scénář a herecký výkon Kevin Spacey. Plot twist desetiletí. "And like that... poof! He\'s gone."' }
+    },
+    /* V1 alt — Animáky & rodinné hity */
+    {
+      questions: [
+        { q: 'Jak se jmenuje Disneyho animovaný film z 1992 o pouličním zloději v Agrabě, který najde kouzelnou lampu?', a: 'Aladin (Aladdin)', c: 'Robin Williams jako Džin. Princezna Jasmine. "A Whole New World." Disney Renaissance v plné formě.' },
+        { q: 'Jak se jmenuje Disneyho animovaný film z 1997 o synovi Dia, který se musí stát hrdinou?', a: 'Hercules', c: '"Zero to Hero." Filmová pop verze řecké mytologie. Megara, Hades (James Woods), Phil. Pětka, ale ne miska medu.' },
+        { q: 'Jak se jmenuje Disneyho animovaný film z 1995 o indiánské princezně v Severní Americe a anglickém kolonialistovi?', a: 'Pocahontas', c: '"Colors of the Wind." Disney problémy s historickou přesností (skutečná Pocahontas byla 12letá). Pohlazení dějin.' },
+        { q: 'Jak se jmenuje Disneyho animovaný film z 1999 o muži, který vyrostl s gorilami v africké džungli?', a: 'Tarzan', c: 'Phil Collins soundtrack. "You\'ll Be in My Heart." Animace + 3D pozadí (Deep Canvas technologie). Vyhrál Oscar za hudbu.' },
+        { q: 'Jak se jmenuje Disneyho animovaný film z 2002 o havajské holčičce, která adoptuje "psa" (vlastně mimozemšťana)?', a: 'Lilo & Stitch', c: 'Stitch = Experiment 626. Havajské "ohana" (rodina) téma. Underrated klasika.' },
+        { q: 'Jak se jmenuje Disneyho animovaný film z 2003 o medvědíkovi, který se promění v medvěda?', a: 'Bratr medvěd (Brother Bear)', c: 'Phil Collins znovu! Kenai, malý medvěd Koda. Alaskan setting. Druhotní díl Disney 2D animace před nástupem CGI.' },
+        { q: 'Jak se jmenuje Disneyho animovaný film z 2001 o ztracené Atlantis a vědecké expedici?', a: 'Atlantis: Tajemná říše (Atlantis: The Lost Empire)', c: 'Steampunk Disney experiment. Michael J. Fox jako Milo. Komerční propad. Pak se z toho stal kult.' },
+        { q: 'Jak se jmenuje Disneyho animovaný film z 2002 o pirátech v vesmíru (adaptace "Treasure Island")?', a: 'Planeta pokladů (Treasure Planet)', c: 'Cyberpunk Robert Louis Stevenson. Komerční propad, který skoro zabil Disney 2D. Vizuálně ale skvělý — kult.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný animovaný film Brada Birda z 1999 o robotovi z vesmíru, který přistane v Maine v 1957?', a: 'Iron Giant (Železný obr)', c: 'Vin Diesel hlas robota. Warner Bros. Cold War setting. "Superman." Komerční propad, pak největší filmový kult.' }
+    },
+    /* V2 alt — Akční hrdinové */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavný akční filmový pár Mel Gibson + Danny Glover — losangeleski policisté Riggs a Murtaugh?', a: 'Smrtonosná zbraň (Lethal Weapon)', c: 'Richard Donner. 4 díly 1987-1998. Murtaugh: "I\'m too old for this shit." Buddy cop genre v perfektní formě.' },
+        { q: 'Jak se jmenuje akční komedie 1998 s Jackiem Chanem a Chrisem Tuckerem v Los Angeles?', a: 'Křižovatka smrti (Rush Hour)', c: 'Brett Ratner. 3 díly. Lee a Carter. Asian-American buddy cop. Jackie Chan v Americe konečně prorazil.' },
+        { q: 'Jak se jmenuje slavný akční film 1994 s Keanu Reevesem a Sandrou Bullock v autobuse s bombou?', a: 'Nebezpečná rychlost (Speed)', c: 'Jan de Bont. "Pop quiz, hot shot." Autobus, který nemůže zpomalit pod 50 mph. Akční scénář — perfektní v jednoduchosti.' },
+        { q: 'Jak se jmenuje slavný akční film 1997 s Nicolasem Cagem na letadle s vězni?', a: 'Con Air (Vzdušní muži)', c: 'Cameron Poe (Cage), Cyrus the Virus (Malkovich). Letadlo plné vrahů. Drsná akce — i s tím králíkem.' },
+        { q: 'Jak se jmenuje slavný akční film John Woo z 1997 s Travoltou a Cage si "vymění tváře"?', a: 'Tváří v tvář (Face/Off)', c: 'Travolta = Sean Archer / Castor Troy. Cage = naopak. Surrealistický akční koncept. John Woo Hollywood debut.' },
+        { q: 'Jak se jmenuje slavný akční film 1995 s Will Smithem a Martinem Lawrencem — Miami narkotický oddíl?', a: 'Mizerové (Bad Boys)', c: 'Michael Bay director debut. "Whatcha gonna do when they come for you?" 3 díly do 2020. Klasika 90s.' },
+        { q: 'Jak se jmenuje akční film 1996 s Nicolasem Cagem a Sean Conneryem na Alcatrazu — chemická zbraň?', a: 'Skála (The Rock)', c: 'Michael Bay. Cage jako chemik, Connery jako bývalý SAS důstojník. VX gas, Alcatraz, San Francisco. Akční milník.' },
+        { q: 'Jak se jmenuje slavný akční film 2001 s Angelinou Jolie jako archeologickou hrdinkou (z videohry)?', a: 'Lara Croft: Tomb Raider', c: 'Jolie jako Lara. Akční ženská hrdinka. Videoherní adaptace, která se podařila (komerčně). Symbol 00s sex appeal.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný akční film 2005 s Bradem Pittem a Angelinou Jolie jako manželské nájemné vrazi?', a: 'Pan a paní Smithovi (Mr. & Mrs. Smith)', c: 'Doug Liman. Začátek "Brangelina" éry — Brad opustil Jen pro Angie. Akční komedie + manželská metafora.' }
+    },
+    /* V3 alt — Sci-fi/horor */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slasher film 1997 s Jennifer Love Hewitt — čtyři teenageři, automobilová nehoda, vrah s háčkem?', a: 'Tichá víska (I Know What You Did Last Summer)', c: 'Lewis Lloyd Adam. "I know what you did last summer." 90s horror obsessed with teen guilt. Sequels do early 00s.' },
+        { q: 'Jak se jmenuje slavný horor (1973) s Lindou Blair — dívenka posedlá démonem, kněží exorcism?', a: 'Vymítač ďábla (The Exorcist)', c: 'William Friedkin. Pea soup, otáčení hlavy, latinské zaříkávání. Strašidelný klasický horor. Pak desítky pokračování.' },
+        { q: 'Jak se jmenuje slavný horor (1984) s ohořelým vrahem se železnými drápy, který útočí ve snech (Wes Craven)?', a: 'Noční můra v Elm Street (A Nightmare on Elm Street)', c: 'Freddy Krueger. Robert Englund. "One, two, Freddy\'s coming for you..." 8+ filmů. Slasher klasika v hororovém panteonu.' },
+        { q: 'Jak se jmenuje slavný slasher film s vrahem v hokejové masce, který útočí na tábor Crystal Lake (od 1980)?', a: 'Pátek 13. (Friday the 13th)', c: 'Jason Voorhees. 12+ filmů. Hokejová maska = ikonický prop. Slasher horror, který umí jen "stab, stab, stab".' },
+        { q: 'Jak se jmenuje slavný horor (1978) Johna Carpentera s Michaelem Myersem v bílé masce — Haddonfield, Illinois?', a: 'Halloween', c: 'Carpenter, low budget legend. Jamie Lee Curtis debut. Theme music nesmrtelný. Reboot 2018 (Curtis comeback).' },
+        { q: 'Jak se jmenuje slavná adaptace Stephena Kinga (1976, Brian De Palma) — dívka s telekinezí na maturitním plese?', a: 'Carrie', c: 'Sissy Spacek. Krev na maturitním plese. Pak remake 2013 (Chloë Grace Moretz). Stephen King v cinematografii.' },
+        { q: 'Jak se jmenuje slavná Stephen King adaptace (1990 TV, 2017 film) o klaunu Pennywiseovi v městě Derry?', a: 'TO (IT)', c: 'Tim Curry v TV verzi. Bill Skarsgård ve filmu 2017. Pennywise — klaun, který sedl všem na čenich.' },
+        { q: 'Jak se jmenuje slavný kultovní film Richarda Kellyho z 2001 s Jake Gyllenhaalem — kostnímu králík Frank, časová smyčka?', a: 'Donnie Darko', c: 'Tangenciální vesmír. Frank, gigantický králíkový oblek. Soundtrack Tears for Fears. Indie kult tisíciletí.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný horor 2004 s Cary Elwesem — vraždící hra "Hra Pekla", maskotem je loutkový Jigsaw?', a: 'Saw (Hra na přežití)', c: 'James Wan, Leigh Whannell. "Do you want to play a game?" 10+ filmů. Torture porn genre začátek.' }
+    },
+    /* V4 alt — Komedie */
+    {
+      questions: [
+        { q: 'Jak se jmenuje komedie 1997 s Jimem Carreyem — právník, který přes 24 hodin musí říkat pravdu?', a: 'Lhář, lhář (Liar Liar)', c: 'Jim Carrey vrchol fyzické komedie. Promiňte, čaj? Né, dveřník je idiot — fórky o pravdě v právu.' },
+        { q: 'Jak se jmenuje slavný film Petera Weira z 1998 s Jimem Carreyem — muž, jehož celý život je televizní show?', a: 'Truman Show (The Truman Show)', c: 'Truman Burbank. Sea Haven (kupole). Christof (Ed Harris) jako "Bůh". Existencialistická komedie genius.' },
+        { q: 'Jak se jmenuje slavná komedie 1988 s Tomem Hanksem o 12letém klukovi, který se stane dospělým?', a: 'Big (Velký)', c: '"Big" hračka v hračkářství. Hanks jako Josh v dospělém těle. Klavírová scéna s tlačítky. Klasika 80s/90s family comedy.' },
+        { q: 'Jak se jmenuje slavná komedie 1993 s Billem Murrayem — meteorolog uvězněný v dni Groundhog Day?', a: 'Na Hromnice o den více (Groundhog Day)', c: 'Harold Ramis. Phil Connors v Punxsutawney. Existencialistická komedie o opakování. Buddhistická interpretace. Klasika.' },
+        { q: 'Jak se jmenuje slavná komedie 1990 s Macaulay Culkinem — kluk zapomenutý doma o Vánocích?', a: 'Sám doma (Home Alone)', c: 'Joe Pesci, Daniel Stern jako lupiči. Setting traps. John Williams hudba. Vánoční filmová klasika.' },
+        { q: 'Jak se jmenuje slavná komedie 1993 s Robinem Williamsem — otec se převlékne za chůvu, aby viděl děti?', a: 'Paní Doubtfireová (Mrs. Doubtfire)', c: 'Robin Williams brilantní physical comedy. Sally Field. Manželské drama mixované s rodičovskou nutností.' },
+        { q: 'Jak se jmenuje komedie 1982 s Dustinem Hoffmanem — herec se převlékne za ženu, aby získal roli?', a: 'Tootsie', c: 'Sydney Pollack. Hoffman jako "Dorothy Michaels". Pre-PC era cross-dressing comedy. Klasické tabu testing.' },
+        { q: 'Jak se jmenuje komedie 2006 s Adamem Sandlerem — muž s univerzálním dálkovým ovládáním života?', a: 'Klik: Život na dálku (Click)', c: 'Christopher Walken jako Morty. Sandler\'s první film s emocionálním závěrem. "Family first" message.' }
+      ],
+      bonus: { q: 'Jak se jmenuje komedie 1991 (parodie filmů Top Gun + Rambo) s Charliem Sheenem?', a: 'Hot Shots! (Žhavé výstřely!)', c: 'Jim Abrahams (ZAZ team). Charlie Sheen jako "Topper Harley". Před skandály a tygří krví — komediální zlatý hvězdný den.' }
+    }
+  ],
+
+  moda: [
+    /* V0 alt — Klasika */
+    {
+      questions: [
+        { q: 'Jaká americká značka modrých džínů (Levi Strauss, od 1873) má model 501 — klasické straight cut?', a: 'Levi\'s', c: 'San Francisco gold rush 1853. Patent na nity 1873. "501" — nejprodávanější model. Generační hipster favorit.' },
+        { q: 'Jaká americká značka oblečení s logo flag-style "stars and stripes", populární v hip-hop módě 90s?', a: 'Tommy Hilfiger', c: 'Tommy Hilfiger 1985. Hip-hop přijal v 90s. Pak Wu-Tang member nadhozil oblečení živě v Tommy reklamě 1994. Tommy = nová značka.' },
+        { q: 'Jaká americká značka casual luxusního oblečení s logem polo-jezdce (od 1967)?', a: 'Polo Ralph Lauren', c: 'Ralph Lifshitz, Bronx. Wasp aesthetic prodaný masově. "The Original Story." Generace yuppies 80s/90s ho miluje.' },
+        { q: 'Jaká americká casual značka (od 1969) s základním logem "GAP" — denim, T-shirty?', a: 'GAP', c: '"Fall into the Gap." Klasické americké basics. 90s vrchol popularity. Pak Old Navy + Banana Republic family.' },
+        { q: 'Jaká italská značka denim a streetwear (Renzo Rosso 1978) — populární v 90s v Česku, drahá?', a: 'Diesel', c: 'Molvena, Italy. "For Successful Living." Kontroverzní reklamy. Generace 00s s Diesel = social proof.' },
+        { q: 'Jaká americká hip-hop značka oblečení (Daymond John, 1992) — slogan "For Us By Us"?', a: 'FUBU', c: '"For Us, By Us." Vlastní hip-hop módní firma. LL Cool J reklama, Magic Johnson investor. Cultural moment 90s.' },
+        { q: 'Jaká hip-hop značka oblečení od Sean "P. Diddy" Combs (1998)?', a: 'Sean John', c: '"Brand new flava in ya ear." Hip-hop, fashion week. Pak Diddy controversies. Brand survives, kontroverze ne.' },
+        { q: 'Jaká hip-hop značka oblečení od Jay-Z (1999) — popular v 00s, dnes vlastní Iconix?', a: 'Rocawear', c: 'Roc-A-Fella collab. Damon Dash + Jay-Z + Kareem "Biggs" Burke. Jay-Z prodal $204 milionů 2007. Smart business move.' }
+      ],
+      bonus: { q: 'Jaká americká kalifornská značka surfingu (od 1969) — populární v Česku 00s mezi skejťáky, kraťasy a trika?', a: 'Quiksilver', c: 'Australia origins, Kalifornie centrum. Surfing brand → mainstream. ROXY (sister brand) pro holky. Beach lifestyle značka.' }
+    },
+    /* V1 alt — Účesy */
+    {
+      questions: [
+        { q: 'Jak se nazýval účes "vysoký culík nahoře" populární u sportovních Spice Girls (Sporty Spice)?', a: 'High ponytail / "Sporty Spice ponytail"', c: 'Mel C., Sporty Spice. Athleisure před tím, než to bylo cool. Pak Ariana Grande celá kariéra na tom postavila.' },
+        { q: 'Jaký účes proslavil malý Justin Bieber v 2009 — středně dlouhé vlasy, čelo zakryté ofinou stáčející se doprava?', a: 'Bieber haircut (mop top)', c: '"Bieber Fever" 2010s. Mop top, side-swept bangs. Celá generace kluků si nechala stejně stříhat. Trauma generační.' },
+        { q: 'Jak se nazýval krátký dámský sestřih 2002 (Halle Berry v Bondovi) — velmi krátké, smyslné?', a: 'Pixie cut', c: 'Halle Berry, Catwoman. Pak Anne Hathaway, Emma Watson, Audrey Hepburn. Pixie cut = "I just got over a breakup" statement.' },
+        { q: 'Jak se nazýval účes long bleached blond u kluků surf/skate kultury 90s/00s — středně dlouhé, vlnité, bělené?', a: 'Surfer hair', c: 'Sun-bleached, salt-water curled. Kalifornský život v účesu. Brad Pitt v 90s občas. Skejťáci v každém parku.' },
+        { q: 'Jak se nazývaly tenké drobné copánky na celé hlavě — Bo Derek z filmu "10" (1979), pak Christina Aguilera 90s?', a: 'Cornrows', c: 'Africké kořeny tisíce let zpět. Pak Hollywood appropriation. Pak ne-OK, pak zase OK, pak debat. Kulturní citlivost lekce.' },
+        { q: 'Jak se jmenovala chemická permanent — kudrnaté vlasy uměle vytvořené, populární 80s ale i 90s?', a: 'Perm (perma, chemická trvalka)', c: 'Cher, Whitney Houston, váš strejda Pepa. Vlasy s chemikálií svinuté na natáčky. 80s/90s vrchol. Pak chemická revoluce skončila.' },
+        { q: 'Jak se jmenoval dámský účes "ofinka" — krátké přední vlasy nad obočím, populární od 60s?', a: 'Bangs (ofina)', c: 'Audrey Hepburn, Zooey Deschanel. "Curtain bangs" comeback v 2020. Vždy se vracejí. Vždy litujete.' },
+        { q: 'Jak se nazýval účes "wet look" — vlasy uhlazené dozadu s gelovým leskem, populární 90s u kluků?', a: 'Slicked back hair / "wet look"', c: 'Pat Riley NBA coach legend. Gordon Gekko Wall Street. 90s yuppie look. Pak Justin Bieber v 2014 znovu — pomada comeback.' }
+      ],
+      bonus: { q: 'Jak se nazýval extrémní punk/alt účes 90s — vlasy oholené po stranách, hřeben uprostřed (často nabarvený)?', a: 'Mohawk (Mohykán)', c: 'Travis Bickle, Travis Barker (Blink-182). Punk classic od 70s. V 90s mainstream alternative. Dnes "fauxhawk" verze.' }
+    },
+    /* V2 alt — Doplňky */
+    {
+      questions: [
+        { q: 'Jak se nazývaly tkané barevné náramky 90s, které jste dávali kamarádům jako symbol přátelství?', a: 'Friendship bracelets (přátelské náramky)', c: 'Tkané z bavlnek. V každém kapsáři 90s dítěte. Pak Taylor Swift Eras Tour je vrátila. Generační symbol.' },
+        { q: 'Jak se jmenovaly barevné mušličkové náhrdelníky 90s, populární u dívek po dovolené v Středomoří?', a: 'Pukka shells (puka shell necklace)', c: 'Havajské mušličky. Backstreet Boys ve videoklipech. Tropical vibe v české škole — kontradikce 90s.' },
+        { q: 'Jak se jmenoval 60s/90s nostalgický dekorační objekt — lampa s plovoucími "lávovými" bublinami?', a: 'Lava lampa', c: 'Edward Craven Walker 1963. Renovace v 90s. Každý teenager pokoj. Klikatící se barevná hmota — meditativní zírání.' },
+        { q: 'Jak se jmenoval řetízek od pasu k peněžence, populární u skejťáků a punkerů 90s/00s?', a: 'Wallet chain (řetízek od peněženky)', c: 'Subkulturní statement. Peníze nepřítel, ale řetízek na ně cool. Punk, skate, metal — všichni.' },
+        { q: 'Jak se jmenovaly volné vojenské kalhoty s mnoha kapsami, populární v 00s u hip-hop a skate kultury?', a: 'Cargo pants (kapsáče)', c: 'Vrátily se v 2022. Kapsy, ve kterých jste nosili všechno (mobil, žvýkačky, klíče, peněženku). Praktické nad estetiku.' },
+        { q: 'Jak se nazýval řetězový pásek (často kožený s kovovými články), populární u rockerů 90s?', a: 'Chain belt (řetězový pásek)', c: 'Motorkáři, rockeři, alternativní teenageři. Cinkání při chůzi — sluchový statement. Z kanad to převzal každý druhý.' },
+        { q: 'Jaká celebrita 00s vyrobila trucker hat populární — pulluver kšiltovka s pěnovou přední stranou?', a: 'Trucker hat (Ashton Kutcher)', c: 'Začátek 00s. Ashton Kutcher v "Punk\'d". Von Dutch značka. Pak Britney Spears, Justin Timberlake. Cca 2003-2006 vrchol.' },
+        { q: 'Jak se nazýval drobný plastový kruh na klíče s logem značky (kapela, fotbal) — populární v 90s u dětí?', a: 'Keychain / klíčenka', c: 'Tamagotchi měl klíčenku. Hard Rock Cafe key chain. Toy story keychains. Kapsa dětí 90s = klíčenky a baseball cards.' }
+      ],
+      bonus: { q: 'Jak se nazývala plastová peněženka s velkým suchým zipem (Bart Simpson edition), populární u dětí 90s?', a: 'Velcro wallet (suchý zip peněženka)', c: 'Bart Simpson, Power Rangers, Pokemon edition. Hlasité otevírání — "rrrip". Generační oblíbenec. Pak peněženky pro dospělé.' }
+    },
+    /* V3 alt — Boty/obuv */
+    {
+      questions: [
+        { q: 'Jak se nazývají bílé klasické basketbalové boty Nike (od 1982), nejprodávanější model všech dob — model bez čísla?', a: 'Nike Air Force 1', c: 'Bruce Kilgore. Originálně basketbalová obuv. 90s/00s hip-hop fashion takeover. Drake "Started from the Bottom" — bottom byly AF1s.' },
+        { q: 'Jak se jmenují bílé klasické Adidas tenisky s zelenou patou (od 1965), pojmenované po slavném tenistovi?', a: 'Adidas Stan Smith', c: 'Stan Smith, US tenista. Nejprodávanější tenisky Adidasu. Minimalistický bílo-zelený design. Hipster, dospělý, generační.' },
+        { q: 'Jak se nazývají tenisky Converse — vinatge model "Chuck 70" (znovuvydaný original 1970 šablon)?', a: 'Converse Chuck 70', c: 'Chuck Taylor All Star, vintage cut. Wider toe, premium materials. Hipster comeback. Konkrétně 70 — protože z 1970 forma.' },
+        { q: 'Jaká americká značka pánských a dámských bot (od 1928) je sociálně premium — luxus pro yuppies 90s/00s?', a: 'Cole Haan', c: 'Nike koupila 1988-2013. Wall Street boots. Luxe casual. Pre-sneakers kultura — když ještě byly oxfords ke obleku.' },
+        { q: 'Jaká kanadská značka luxusní obuvi (od 1972) — populární u žen 00s, kožené módní lodičky?', a: 'Aldo', c: 'Aldo Bensadoun Montreal. Affordable luxury. Holky 00s ho znaly jako "step-up" od H&M. Generační classify-up.' },
+        { q: 'Jaká americká dámská značka módních bot — populární v "Sex and the City"?', a: 'Steve Madden', c: 'Long Island, NY 1990. Affordable Manolo Blahnik. Carrie Bradshaw inspiration brand. Pak Steve Madden šel do vězení (insider trading) — značka přežila.' },
+        { q: 'Jaká americká značka sportovních bot pro chůzi a dvořní pohyb (od 1992) — populární u maminek 00s?', a: 'Skechers', c: 'Manhattan Beach, Kalifornie. "Shape-ups" boty s kontroverzní reklamou (Olympic body). Comfort over style. Generační mom shoes.' },
+        { q: 'Jaká americká značka tenisek s logem "Air" (od 1959, vlasy v sole) — populární v fitness 80s/90s, dnes vintage?', a: 'K-Swiss', c: 'David a Art Brunner Kalifornie. První tenisové sneakery. Classic 5-stripe design. Reklama Anna Kournikova 00s. Vintage comeback.' }
+      ],
+      bonus: { q: 'Jaká italská značka luxusních pánských bot (od 1948), klasický loafer model "1958"?', a: 'Tod\'s', c: 'Tod\'s Driving Shoe. 133 gumových pejmpů na podrážce. Italský luxus pro yacht crowd. 1958 = founding rok modelu.' }
+    },
+    /* V4 alt — Celebrity styly */
+    {
+      questions: [
+        { q: 'Která americká teen herečka, "Mean Girls" 2004, nosila pink šaty (Cady Heron) — pak média drama?', a: 'Lindsay Lohan', c: 'Z "Parent Trap" (1998) na "Mean Girls" (2004). Pak média obsession, paparazzi, rehab. 00s celebrity tragédie. Comeback v 20s.' },
+        { q: 'Která americká celebrita (heir Hilton family) proslavila Juicy Couture velour tracksuits v 00s?', a: 'Paris Hilton', c: '"That\'s hot." Sex tape 2004, "Simple Life" reality show, "Stars Are Blind" (2006). Z heiress na brand mogul.' },
+        { q: 'Která americká teen herečka byla "Lizzie McGuire" (Disney 2001-2004), pak zpěvačka 00s?', a: 'Hilary Duff', c: '"What Dreams Are Made Of." Disney Channel\'s biggest star. Pak comeback "How I Met Your Father" (2022). Generační loyalty.' },
+        { q: 'Která kanadská zpěvačka punk-popu má charakteristický look kravata + tielká, hity "Sk8er Boi" 2002?', a: 'Avril Lavigne', c: 'Napoleon Lavigne (sic — narozená 1984). Z malého kanadského města do popcorn-rocku. "Complicated", "I\'m With You". 00s teenage rebellion.' },
+        { q: 'Která americká zpěvačka R&B měla v 2002 hit "Dirrty" s extrémním sexy stylem (postcrap kontroverze)?', a: 'Christina Aguilera ("Dirrty" era)', c: 'Album "Stripped". Boxing ring videoklip. Šokoval mateřské skupiny. Christina vs. Britney: kdo je víc "shocking."' },
+        { q: 'Které blond celebrity sestry — herečky z dětství (Full House), pak fashion designers The Row?', a: 'Mary-Kate & Ashley Olsen', c: 'Full House Michelle Tanner (sdílená role). Pak teen movies (DVD direct). Pak luxusní fashion The Row. Reinvention masterclass.' },
+        { q: 'Která americká herečka a "Notebook" hvězda 2004 měla romance s Ryan Goslingem v životě i na obrazovce?', a: 'Rachel McAdams', c: '"Mean Girls" Regina George (2004). Pak "Notebook" (2004). Ryan Gosling: "ne, fakt jsem ji nesnášel během natáčení". Pak randili.' },
+        { q: 'Která americká celebrity socialité 00s má charakteristickou estetiku "rich and famous" — kožíšek, malí pes?', a: 'Nicole Richie', c: 'Lionel Richie\'s adopted daughter. "Simple Life" s Paris Hilton. Bulimia struggle, comeback. Boho fashion mom.' }
+      ],
+      bonus: { q: 'Která americká herečka byla v 90s "America\'s Sweetheart" — Friends Rachel Green, manželkou Brada Pitta?', a: 'Jennifer Aniston', c: '"Friends" Rachel. Pak Brad-Jen-Angelina trojúhelník. Pak comeback s "Morning Show" (Apple TV+). Forever 25.' }
+    }
+  ],
+
+  hry: [
+    /* V0 alt — PC klasiky */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavná logická hra DMA Design z 1991 — zelené tvory provádět od portálu k portálu?', a: 'Lemmings', c: 'David Jones. "Oh no!" Pak DMA Design = Rockstar (GTA). Lemmings = jejich start. Logická hra 90s ikona.' },
+        { q: 'Jak se jmenuje slavná akční hra Jordan Mechner z 1989 — perský princ skáče po kameních dungeonech?', a: 'Prince of Persia', c: 'Apple II origin. Rotoscope animace (Mechner natočil bratra rotující v sandbox). Pak 3D série Ubisoft (2003+).' },
+        { q: 'Jak se jmenuje slavná FPS hra id Software z 1992 — americký voják bojuje s nacisty v hradě?', a: 'Wolfenstein 3D', c: 'B.J. Blazkowicz. Castle Wolfenstein. První mainstream 3D FPS — předchůdce Doom. John Carmack engine.' },
+        { q: 'Jak se jmenuje slavná simulátorová hra Maxis z 1993 — postavit a spravovat virtuální město?', a: 'SimCity 2000', c: 'Will Wright. Isometric view. Mr. Burns z Simpsons reklamoval. Generační čas-killer ve škole.' },
+        { q: 'Jak se jmenuje slavná simulátorová hra Bullfrog/Microprose z 1999 — postavit a spravovat zábavní park s horskými dráhami?', a: 'RollerCoaster Tycoon', c: 'Chris Sawyer napsal hlavně v assembleru. Sólo programátor s genialitou. Generační dětský sen.' },
+        { q: 'Jak se jmenuje slavná simulátorová hra Maxis/EA z 2000 — virtuální lidé v domech, kariéra, sociální vztahy?', a: 'The Sims', c: 'Will Wright znovu. "Simlish" jazyk. Nejprodávanější PC hra historie (200+ milionů). Generační life simulator.' },
+        { q: 'Jak se jmenuje slavná FPS hra Valve z 1998 — fyzik Gordon Freeman v Black Mesa, mimozemšťané?', a: 'Half-Life', c: 'Valve\'s debut. Inovativní scripted sequences (no cutscenes). Pak Half-Life 2 (2004). Half-Life 3? Nikdy. Valve nemůže dělat trojky.' },
+        { q: 'Jak se jmenuje slavná vzdělávací hra (Brøderbund 1985) — chyt kriminalniku Carmen po světě?', a: 'Carmen Sandiego', c: '"Where in the world is Carmen Sandiego?" Geografická vzdělávací hra. Pak TV show (1991). Edutainment classic.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavná puzzle adventure hra Cyan z 1993 — ostrov s mysterii, point-and-click?', a: 'Myst', c: 'Bratři Robyn a Rand Miller. Nejprodávanější PC hra v 90s (až do Sims). Etherially beautiful. CD-ROM killer-app.' }
+    },
+    /* V1 alt — Konzole */
+    {
+      questions: [
+        { q: 'Jak se jmenuje legendární konzole Atari (od 1977), nejdéle běžící konzole 70s/80s — "VCS"?', a: 'Atari 2600', c: 'První mass-market konzole. Pac-Man port (špatný), E.T. (pohřbený v poušti). Atari crash 1983. Pak Nintendo zachránil průmysl.' },
+        { q: 'Jak se jmenuje konzole Sega (od 1986, USA 1987) — 8-bit, Alex Kidd jako maskot?', a: 'Sega Master System', c: 'Před Genesis. V Brazílii dodnes vyrábí. Hardware superior Nintenduvi NES, ale prohrál marketing válku.' },
+        { q: 'Jak se jmenuje slavná Nintendo konzole z 1983/1985 — 8-bit, Super Mario Bros. (1985) jako killer-app?', a: 'NES (Nintendo Entertainment System)', c: 'Famicom v Japonsku. NES v USA. Zachránil konzolový průmysl po Atari crash. Kim Cattrall reklama "Now You\'re Playing With Power."' },
+        { q: 'Jak se jmenuje Nintendo handheld konzole z 2001 — barevné, malé kazety, Pokémon Ruby/Sapphire flagship?', a: 'Game Boy Advance', c: 'Po Game Boy Color. 32-bit, vyšší rozlišení. SP varianta s podsvícením. Generační handheld kultura.' },
+        { q: 'Jak se jmenuje Nintendo konzole z 2006 s pohybovým ovladačem (motion controls) — Wii Sports killer-app?', a: 'Wii', c: 'Wii Remote, Wii Nunchuk. Wii Sports tenis baviil i babičky. Casual gaming revoluce. 100+ milionů prodáno.' },
+        { q: 'Jak se jmenuje Sony konzole z 2006 — Blu-ray přehrávač, online (PSN), kontroverzní cena?', a: 'PlayStation 3 (PS3)', c: 'Cell processor (drahý). PSN hacked 2011 (77 milionů účtů). Velmi pomalý start, silný konec.' },
+        { q: 'Jak se jmenuje Microsoft konzole z 2005 (rok před PS3) — HD éra, Xbox Live multiplayer scéna?', a: 'Xbox 360', c: 'Red Ring of Death (RROD) hardware defekt. Microsoft prodloužil záruku — záchrana brand. Halo 3, Gears of War éra.' },
+        { q: 'Jak se jmenuje Nintendo handheld konzole z 2006 — vylepšení Nintendo DS, tenčí, jasnější?', a: 'Nintendo DS Lite', c: 'Sleeker than original DS. Bestseller 90s. Hraní v noci pod peřinou. Generační utopie před telefony.' }
+      ],
+      bonus: { q: 'Jak se jmenuje neúspěšná Nintendo handheld z 1995 — 32-bit, červeno-černý 3D headset, bolesti hlavy?', a: 'Virtual Boy', c: 'Gunpei Yokoi designoval (vynálezce Game Boy). 22 her, 6 měsíců na trhu. VR předbíhal dobu, ale bolelo to.' }
+    },
+    /* V2 alt — PC strategie */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavná strategie Ensemble z 2005 — pokračování AOE II, asijské frakce, "Conquerors expansion"?', a: 'Age of Empires II: The Conquerors / III', c: 'AOE II (1999) — kultovní. AOE III (2005) — odbočka, méně oblíbená. Pak AOE II Definitive Edition 2019 — comeback.' },
+        { q: 'Jak se jmenuje slavná Sid Meier strategie 1996 — pokračování Civilization, lepší AI, diplomatie?', a: 'Civilization II', c: 'MicroProse. Princess Leia hraje! Diplomatic victory, science victory. Sid Meier perfekcionalismus.' },
+        { q: 'Jak se jmenuje slavná sci-fi strategie 1993 — Civilization ve vesmíru, různé rasy galaktic?', a: 'Master of Orion', c: 'SimTex (Steve Barcia). Civ + space = magic. Master of Orion II (1996) — golden age. Pak komerční pokles.' },
+        { q: 'Jak se jmenuje slavná city-builder hra Maxis 1999 — pokračování SimCity 2000?', a: 'SimCity 3000', c: 'Lepší grafika, advisory boards, real cities. Pak SimCity 4 (2003) — high point před EA disasterem.' },
+        { q: 'Jak se jmenuje slavná history strategy hra Sierra/Impressions 1998 — starověký Řím?', a: 'Caesar III', c: 'Build Roman city. Houses upgrade through happiness. Plebs, equites, patricians. Edukace + zábava.' },
+        { q: 'Jak se jmenuje slavná history strategy hra Sierra/Impressions 1999 — starověký Egypt, pyramidy?', a: 'Pharaoh', c: 'Caesar III sister. Build Egyptské město, postav pyramidu. Religion, agriculture, trade. Niche kult.' },
+        { q: 'Jak se jmenuje slavná tycoon hra Bullfrog 1994 — postavit a spravovat zábavní park (předchůdce RollerCoaster Tycoon)?', a: 'Theme Park', c: 'Peter Molyneux! Před Lionhead. EA publishing. Pak Bullfrog acquired. Generační simulátor zábavy.' },
+        { q: 'Jak se jmenuje slavná tycoon hra Bullfrog 1997 — postavit a spravovat nemocnici, sranda smrt a pacienti?', a: 'Theme Hospital', c: 'Bloaty Head disease. Slack Tongue. Humorný takt nad smrtí. Generační favorit.' }
+      ],
+      bonus: { q: 'Jak se jmenuje "god game" Bullfrog z 1989 — Peter Molyneux design, hra na boha?', a: 'Populous', c: 'První "god game". Molyneux pak Black & White, Fable. Populous založil žánr. Otázka: jsem dobrý nebo zlý bůh?' }
+    },
+    /* V3 alt — Online MMOs */
+    {
+      questions: [
+        { q: 'Jak se jmenuje populární chatovací 2D virtual hotel z 2000 (Finsko) — pixel art, mladé teenagery, dating?', a: 'Habbo Hotel', c: 'Sulake. Pak Habbo Hotel = celá generační vzpomínka. Pak skandály s prediátory (BBC 2012). Habbo přežil.' },
+        { q: 'Jak se jmenuje populární browser game pro děti z 1999 — virtuální pet site, mini-hry, ekonomika?', a: 'Neopets', c: 'Adam Powell, Donna Williams. Viacom koupil 2005, prodal 2014. Generační dětská obsession. Neopets dodnes existuje.' },
+        { q: 'Jak se jmenuje populární Disney online hra (2005-2017) — pinguinové na ostrově, chat, mini-hry?', a: 'Club Penguin', c: 'Lance Priebe. Disney koupil 2007. Klasika pro děti 00s. Po zavření 2017 — vlna nostalgie, fan revivals.' },
+        { q: 'Jak se jmenuje populární korejské 2D MMO platformer (2003) — fantasy postavy, jobs, levely?', a: 'MapleStory', c: 'Wizet. Anime estetika. Free to play s mikrotransakce model. Generační Asia gaming, růst i v USA.' },
+        { q: 'Jak se jmenuje původní browser RuneScape (před Java applet upgrade) — 2001 launch?', a: 'RuneScape Classic', c: 'Jagex Andrew & Paul Gower. Java applet v prohlížeči. Pak 2004 RuneScape 2, pak Old School (2013). Generační MMO.' },
+        { q: 'Jak se jmenuje populární polské MMO z 1997 (před WoW), 2D top-down, hardcore PVP?', a: 'Tibia', c: 'CipSoft (Germany). První velké free-to-play MMO. Polish & Brazilian player communities masivní. Old-school survivor.' },
+        { q: 'Jak se jmenuje populární německé strategy MMO 2004 — browser, středověk, výstavba vesnice?', a: 'Travian', c: 'Travian Games. Browser-based strategy. Klan-based wars. Generační čas-killer v kanceláři.' },
+        { q: 'Jak se jmenuje populární 2D MMO Microsoft (od 2004) — Korea origins, anime style, action combat?', a: 'KAL Online / Mu Online', c: 'Webzen Korea. Hack and slash MMO. Velký v Asii, less v Evropě. Generační MMO experiment.' }
+      ],
+      bonus: { q: 'Jak se jmenuje 2D MMO furry community (Catamount Online, od 1996) — kreslené postavy zvířat?', a: 'Furcadia', c: 'Dragonflyght. Furry community early days. 2D top-down. Generation 1.5 v MMO historii. Niche, persistent.' }
+    },
+    /* V4 alt — České hry */
+    {
+      questions: [
+        { q: 'Jak se jmenuje česká adventura Cinemax z 2007 — postava Pankrác řeší případ s Bohy?', a: 'Posel Bohů', c: 'Cinemax (Praha). Český point-and-click v 00s. Voice over Luděk Sobota, Mahulena Bočanová. Klasická česká adventura.' },
+        { q: 'Jak se jmenuje česká adventura Pterodon 1994 — pohádkový příběh o osli a ostrovu?', a: 'Tajemství Oslího ostrova', c: 'Pterodon Software early days. Před Vietcong, Brány Skeldalu. Pohádková animace. Cult mezi českými RPG fanoušky.' },
+        { q: 'Jak se jmenuje pokračování české adventury Polda (Cinemax 1999) — Pankrác řeší případ v Egyptě?', a: 'Polda 2 (Polda 2: Smysl pro humor)', c: 'Pankrác Polda v Egyptě. Cinemax. Pak Polda 3, 4, 5, 6 — kompletní česká franchise.' },
+        { q: 'Jak se jmenuje třetí díl české adventury Polda (Cinemax 2001) — Pankrác v ráji?', a: 'Polda 3', c: '"V ráji?" Pankrác umřel a šel do ráje. Cinemax dál pokračoval. Český adventure underground se nezastavil.' },
+        { q: 'Jak se jmenuje pokračování Operation Flashpoint od Bohemia Interactive — 2002, partyzánské boje na Nogově?', a: 'Operation Flashpoint: Resistance', c: 'Standalone expansion. Drsnější příběh. Bohemia Interactive už jako experienced studio. Pre-ARMA finálka.' },
+        { q: 'Jak se jmenuje druhý díl ARMA série Bohemia Interactive — z 2009?', a: 'ARMA 2', c: '2009 release. Pak operation Arrowhead expansion. DayZ mod (2012) vznikl z toho — fenomén survival gaming.' },
+        { q: 'Jak se jmenuje populární česky pre-release survival mod z 2012 v ARMA 2 — zombie apokalypsa, hardcore?', a: 'DayZ (mod, později samostatná hra)', c: 'Dean "Rocket" Hall, Nový Zéland. Mod pro ARMA 2. Pak standalone game od BI 2013. Kickstartoval survival genre.' },
+        { q: 'Jak se jmenuje pokračování Mafia od 2K Czech (2010) — Vito Scaletta v Empire Bay?', a: 'Mafia II', c: '2K Czech (bývalý Illusion Softworks Brno). Akce, hudba, sicilianská mafia. Méně dobrý než původní, ale stále kult.' }
+      ],
+      bonus: { q: 'Jak se jmenovali bratři, kteří v 90s založili Bohemia Interactive (Mladá Boleslav)?', a: 'Marek a Ondřej Španělovi', c: 'Bratři Španělovi. Marek programátor, Ondřej business. Z DOS hry "Poseidon" do globální armádní simulátorové firmy. Czech pride.' }
+    }
+  ],
+
+  sport: [
+    /* V0 alt — Hokej */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavný kanadský hokejista (Pittsburgh Penguins), spoluhráč Jaromíra Jágra v Stanley Cup 1991, 1992?', a: 'Mario Lemieux', c: '"Super Mario." Číslo 66. 690 gólů. Hodgkinova choroba 1993, vrátil se na led. Pak Penguins majitel — zachránil franšízu.' },
+        { q: 'Jak se jmenuje slavný kanadský hokejista, dvojnásobný vítěz Stanley Cup s Colorado Avalanche (1996, 2001)?', a: 'Joe Sakic', c: 'Burnaby Joe. Kapitán Avalanche. Conn Smythe Trophy. Pak Avalanche GM. Hokej v kalifornské vesnici i odpovědnost.' },
+        { q: 'Jak se jmenuje slavný ruský brankář NHL, "The Bulin Wall", reprezentoval Phoenix Coyotes a NHL hvězdy?', a: 'Nikolai Khabibulin', c: 'Tampa Bay Lightning Stanley Cup 2004. Bulin. Pak Chicago Blackhawks. Rusko-americký brankář, který Jágr respektoval.' },
+        { q: 'Jak se jmenuje slavný americký brankář, kapitán USA na olympiádě 2002 (stříbro)?', a: 'Mike Richter', c: 'NY Rangers Stanley Cup 1994. World Cup of Hockey 1996 — vítězství USA proti Kanadě. Pak Yale ekonomie absolvent.' },
+        { q: 'Jak se jmenuje slavný švédský hokejista, kapitán Colorado Avalanche, MVP NHL 2003 — slavný "Forsbergův trik" 1994?', a: 'Peter Forsberg', c: 'Avalanche, Flyers, Predators. Olympic gold 1994 + 2006 (Sweden). "Forsberg move" — penalty shot proti Kanadě = symbol švédského hokeje.' },
+        { q: 'Jak se jmenuje slavný kanadský hokejista NHL 90s, vysoký 6\'4", agresivní Eric ___?', a: 'Eric Lindros', c: '"Big E." Philadelphia Flyers (Legion of Doom line). Concussions zničily kariéru. Symbol odmítavých draftů (odmítl Nordiques 1991).' },
+        { q: 'Jak se jmenuje slavný ruský hokejista 90s/00s — "Russian Rocket", Vancouver Canucks, ofenzivní hvězda?', a: 'Pavel Bure', c: 'Calder Trophy 1992. 60 gólů v sezóně dvakrát. Tragicky krátká kariéra (zranění). Bratr Valeri (Florida Panthers) — duo bratři Bure.' },
+        { q: 'Jak se jmenuje slavný slovenský hokejista NHL 90s/00s — Pittsburgh, Detroit, Atlanta, Chicago Stanley Cup 2013?', a: 'Marián Hossa', c: 'Hokejista, který několikrát ztratil finále, pak nakonec vyhrál (Chicago 2013, 2015). Pak alergie zničily kariéru. Trnavská legenda.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný kanadský brankář, MVP NHL playoffs 1986 a 1993 (Conn Smythe), klasický "butterfly" styl?', a: 'Patrick Roy', c: '"St. Patrick." Montreal Canadiens, Colorado Avalanche. 4× Stanley Cup. Pak Avalanche head coach. Stylová ikona pro mladé brankáře.' }
+    },
+    /* V1 alt — Fotbal/Olympiády */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavný anglický fotbalista, manžel Victoria (Posh Spice), kapitán Manchester United a Real Madrid?', a: 'David Beckham', c: '"Bend It Like Beckham." Free kicks legend. Pak LA Galaxy, brand mogul. S Victorií 4 děti. Britský fotbalový superstar.' },
+        { q: 'Jak se jmenuje slavný portugalský fotbalista, MS 2002 stříbrný, Real Madrid, Manchester United?', a: 'Cristiano Ronaldo', c: '"CR7." 5× Ballon d\'Or. Madeira, kde se narodil, mu postavili sochu. Sokol s pomalou kariérou Saudská Arábie.' },
+        { q: 'Jak se jmenuje slavný argentinský fotbalista, 8× Ballon d\'Or, MS 2022 vítěz s Argentinou?', a: 'Lionel Messi', c: '"La Pulga" (Blecha). Barcelona dvě dekády, pak PSG, pak Inter Miami. Vrchol Argentiny: MS 2022 v Kataru.' },
+        { q: 'Jak se jmenuje slavný brazilský fotbalista, dvojnásobný Ballon d\'Or (2004, 2005), Barcelona, AC Milan?', a: 'Ronaldinho', c: '"O Bruxo" (Čaroděj). Sourcerer of the ball. Pak finanční problémy v Brazílii. Génius, který kariéru hodil do koše.' },
+        { q: 'Jak se jmenuje slavný francouzský fotbalista, kapitán Arsenal, Barcelona — top scorer Premier League 4× v řadě?', a: 'Thierry Henry', c: '"Va Va Voom." Renault reklama. Arsenal Invincibles 2003-2004. Charakteristický celebrace s prstem na ústech.' },
+        { q: 'Jak se jmenuje slavný španělský brankář, kapitán Realu Madrid, Euro 2008 + MS 2010 + Euro 2012 vítěz?', a: 'Iker Casillas', c: '"San Iker." Tři major tournaments za sebou. Pak hospitalizace 2019. Pak žena ho opustila. Drama v sportu.' },
+        { q: 'Jak se jmenuje slavný ukrajinský fotbalista, Ballon d\'Or 2004, AC Milan top scorer?', a: 'Andriy Shevchenko', c: 'Chernobyl evakuace v 9 letech. Pak Dynamo Kyjev, AC Milan. Coach Ukrainian národního týmu. Symbol Ukrainian football.' },
+        { q: 'Jak se jmenuje slavný anglický fotbalista, midfielder Chelsea a Liverpool, otec Christine Bleakley husband?', a: 'Frank Lampard', c: 'Chelsea legend. 211 gólů (rekord středně-pole hráče). Pak coach Derby County, Chelsea. Charisma + skill kombinace.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný česky fotbalový trenér, který vedl Českou republiku na Euro 2004 — semifinále?', a: 'Karel Brückner', c: 'Z Olomouce. Reprezentace 2001-2008. Euro 2004 — semifinále, nejlepší český fotbalový moment 00s. Pak Rakušan.' }
+    },
+    /* V2 alt — Tenis */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavný německý tenista 80s/90s, vítěz Wimbledonu 1985 v 17 letech?', a: 'Boris Becker', c: '"Boom Boom Becker." Trenér Djokoviče v 2014-2016. Pak bankrot, vězení 2022. Tenisová legenda s tragickým osudem.' },
+        { q: 'Jak se jmenuje slavný americký tenista (90s career end), 7× US Open vítěz, charakteristický temperament a "You cannot be serious!"?', a: 'John McEnroe', c: 'Před 90s vrchol. V 90s komentátor. Filmová role v "Borg vs. McEnroe" (2017) — Shia LaBeouf hraje McEnroea.' },
+        { q: 'Jak se jmenuje slavný švédský tenista 80s/90s — 6× Grand Slam, kvalitní zadní hra, "Mr. Cool"?', a: 'Stefan Edberg', c: '"Edberg Effect." Klasický serve-and-volley styl. Trenér Federera 2014-2015. Švédská tenisová zlatá éra.' },
+        { q: 'Jak se jmenuje slavný československý/americký tenista 80s, 8× Grand Slam, krátká kariéra v 90s?', a: 'Ivan Lendl', c: 'Z Ostravy emigroval 1981. Brad Gilbert: "Lendl je úspěch tvrdé práce." Pak trenér Andyho Murraye (3× Slam). Maverick.' },
+        { q: 'Jak se jmenuje slavný švýcarský tenista, 20× Grand Slam, "Federerova doba" 00s/10s?', a: 'Roger Federer', c: 'Basel. Klasické řecké tenisové vzory. Federer-Nadal-Djokovič trojúhelník. Důchod 2022. Pak Wimbledon plakal.' },
+        { q: 'Jak se jmenuje slavný španělský tenista, 22× Grand Slam (rekord), "King of Clay"?', a: 'Rafael Nadal', c: '"Rafa." Mallorca origin. 14× French Open (rekord). Strýček Toni trenér. Pak zranění zničila kariéru. Mladý důchodce.' },
+        { q: 'Jak se jmenuje slavná ruská tenistka, vítězka Wimbledonu 2004 (17 let), pak doping skandál 2016?', a: 'Maria Sharapova', c: 'Sibiř origin. Wimbledon 2004 = teen sensation. Pak Meldonium doping skandál. Comeback nedotáhla. Pak business career.' },
+        { q: 'Jak se jmenuje slavná belgická tenistka, 7× Grand Slam (00s), comeback z důchodu po dvou letech?', a: 'Justine Henin', c: 'Belgian tenisová královna. Důchod 2008, comeback 2010. Pak definitivní důchod. Rival Williamsovým.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný australský tenista, vítěz Wimbledonu 2002 a US Open 2001 (jako 20letý)?', a: 'Lleyton Hewitt', c: 'Adelaide origin. Nejmladší no. 1 v open éře (20 let, 9 měsíců). Pak Hewitt-Roddick generation. Davis Cup kapitán Austrálie.' }
+    },
+    /* V3 alt — Cyklistika */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavný španělský cyklista 90s, 5× Tour de France (1991-1995) v řadě?', a: 'Miguel Indurain', c: '"Big Mig." Navarra. 5× Tour de France ve řadě (rekord). Pak doping podezření, ale nikdy nepřiznán. Generální čistá legenda.' },
+        { q: 'Jak se jmenuje slavný dánský cyklista, vítěz Tour de France 1996 (před Armstrongem)?', a: 'Bjarne Riis', c: 'Pak přiznal doping EPO 2007. Tour de France 1996 odebráno, pak zpět (po revizi). Doping confessor of cycling 90s.' },
+        { q: 'Jak se jmenuje slavný francouzský cyklista 70s/80s, 5× Tour de France — "The Badger"?', a: 'Bernard Hinault', c: '"Le Blaireau." 5× Tour. Tour de France 1985 spolupráce s LeMondem — kontroverze. Francouzská cyklistická poslední aristokracie.' },
+        { q: 'Jak se jmenuje slavný irský cyklista 80s/90s, klasik závodů "Paris-Roubaix" — KOM Tour de France 1989?', a: 'Sean Kelly', c: 'Carrick-on-Suir. "King of the Classics" 80s. Pak Eurosport komentátor. Irish cycling pride.' },
+        { q: 'Jak se jmenuje slavný irský cyklista, jediný Ir s Triple Crown (Tour, Giro, World Championship) v 1987?', a: 'Stephen Roche', c: 'Dublin. 1987 Triple Crown — Tour de France, Giro d\'Italia, World Championship. Pak Tour 1991 — kandidat na 2. titul.' },
+        { q: 'Jak se jmenuje slavný britský sprinter (cca 30 etap Tour de France) — "Manx Missile"?', a: 'Mark Cavendish', c: 'Z ostrova Man. 34 etap Tour de France (rekord, hodlá překonat Merckxe). Sprinterka legenda 10s.' },
+        { q: 'Jak se jmenuje slavný slovenský cyklista, 3× World Champion (2015-2017), populární i v ČR?', a: 'Peter Sagan', c: 'Žilina origin. Mountain bike → road racing. Green jersey Tour de France 7×. Slovenský cyklistický národní hrdina.' },
+        { q: 'Jak se jmenuje slavný britský/keňský cyklista, 4× Tour de France (2013-2017)?', a: 'Chris Froome', c: 'Skinny climber. Team Sky/INEOS. Pak Bahrain Victorious. 4× Tour, 2× Giro, 1× Vuelta. Britská cyklistická dominance 10s.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný španělský cyklista, 7× Grand Tour vítěz (2007-2014), kontroverzní doping (Operación Puerto)?', a: 'Alberto Contador', c: '"El Pistolero." Triple Crown 2008. Pak doping cancellace Tour 2010 (klenbuterol). Pak comeback. Madrid origin.' }
+    },
+    /* V4 alt — Zimní sporty */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavná americká sjezdařka, 4× zlato World Cup overall (2008, 2010, 2011, 2012)?', a: 'Lindsey Vonn', c: 'Minnesota origin. Vrchol kariéry 2008-2012. Pak zranění série. Tiger Woods (ex-přítel) drama. Sjezdařská superstar.' },
+        { q: 'Jak se jmenuje slavný norský sjezdař, dvojnásobný olympijský vítěz (2010, 2018) — pak důchod?', a: 'Aksel Lund Svindal', c: 'Bærum, Norsko. World Cup overall 2007. Olympic gold 2010 (super-G), 2018 (sjezd). Pak důchod, fotbal.' },
+        { q: 'Jak se jmenuje slavný lichtenštejnský sjezdař 90s/00s — bronz Olympiáda 2002?', a: 'Marco Büchel', c: 'Liechtenstein 33 000 obyvatel. Sjezdař z mikrostátu, který se prosadil. Kult mezi fanoušky outsiderů.' },
+        { q: 'Jak se jmenuje slavná švédská sjezdařka, 6× World Cup overall (2001-2007), 7× Olympic medaile?', a: 'Anja Pärson', c: 'Tärnaby origin (stejně jako Ingemar Stenmark). Pak komentátorka. Sjezd královna 00s.' },
+        { q: 'Jak se jmenuje slavný švýcarský sjezdař 80s, 4× World Cup overall, dvojnásobný olympijský vítěz 1988?', a: 'Pirmin Zurbriggen', c: 'Saas-Almagell, Wallis. Calgary Olympics 1988 — sjezd zlato. Klasický švýcarský sjezdař. Pak důchod do hor.' },
+        { q: 'Jak se jmenuje slavný rakouský sjezdař 00s, World Cup overall 2002, 2008 — důchod 2010?', a: 'Stephan Eberharter', c: 'Hippach, Tirol. Po Maierovi rakouská sjezdařská hvězda. Kombinace technické přesnosti a riziko.' },
+        { q: 'Jak se jmenuje slavný rakouský slalomář 00s, 2× World Cup overall (2006, 2008)?', a: 'Benjamin Raich', c: 'Pitztal, Tirol. Slalom & giant slalom specialist. Pak nikdy nedotáhl olympijské zlato. Stříbrná legenda.' },
+        { q: 'Jak se jmenuje slavný německý sáňkař, 3× olympijský vítěz (2010, 2014, 2018) — single luge?', a: 'Felix Loch', c: 'Berchtesgaden, Bavaria. Dynastie — otec David Möller. Lugeu světová dominance. Sportovní genetika.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný americký short track speedskater, 8× olympijský medailista — Salt Lake 2002, Torino 2006, Vancouver 2010?', a: 'Apolo Anton Ohno', c: 'Seattle origin. Charakteristický americký nasazený bandána. "Dancing with the Stars" vítěz 2007. Mainstream celebrity speed skating.' }
+    }
+  ],
+
+  reklamy: [
+    /* V0 alt — Slogany */
+    {
+      questions: [
+        { q: 'Doplň americký slogan kampaně mléčného průmyslu (od 1993): "Got ___?"', a: 'Milk', c: '"Got Milk?" California Milk Processor Board. Reklamní pretty cool campaign. Celebrity s mléčnými knírkem. Klasika 90s.' },
+        { q: 'Doplň slogan Coca-Cola z 2009: "Open ___"', a: 'Happiness', c: '"Open Happiness." Coca-Cola "Open Happiness" campaign 2009-2015. Slogan, který se vrátil v 2019 jako "Real Magic."' },
+        { q: 'Doplň slogan Visa: "It\'s Everywhere You ___"', a: 'Want To Be', c: '"It\'s everywhere you want to be." Slogan z 80s, klasika kreditních karet. Pak Visa "More people go with Visa" (2009).' },
+        { q: 'Doplň slogan MasterCard: "There Are Some Things Money Can\'t Buy. For ___, There\'s MasterCard"', a: 'Everything Else', c: '"For everything else, there\'s MasterCard." 1997 launch. Priceless campaign. Best advertising of decade.' },
+        { q: 'Doplň slogan American Express: "Don\'t Leave ___ Without It"', a: 'Home', c: '"Don\'t leave home without it." Karl Malden voice 1975-2003. American Express klasika.' },
+        { q: 'Doplň slogan De Beers (od 1947, klenotnický průmysl): "A Diamond Is ___"', a: 'Forever', c: '"A Diamond Is Forever." Frances Gerety advertising copywriter. 75+ let stejný slogan. Marketing manipulation masterpiece.' },
+        { q: 'Doplň slogan General Electric: "Imagination at ___"', a: 'Work', c: '"Imagination at Work" (2003+). Před tím "We Bring Good Things to Life." Industrial giant rebranding.' },
+        { q: 'Doplň slogan Nestlé: "Good Food, Good ___"', a: 'Life', c: '"Good Food, Good Life." Slogan z roku 2008+. Klasika food brand corporate slogan — universally bland, universally remembered.' }
+      ],
+      bonus: { q: 'Doplň anglický slogan Snickers z 2010+: "You\'re Not You When You\'re ___"', a: 'Hungry', c: '"You\'re not you when you\'re hungry." Slavná Betty White Super Bowl reklama 2010. Pak desítky celebrity verzí — hladový Schwarzenegger, hladová Aretha Franklin.' }
+    },
+    /* V1 alt — Reklamní postavičky */
+    {
+      questions: [
+        { q: 'Jaký reklamní maskot Toys "R" Us je velká žirafa (od 1965)?', a: 'Geoffrey the Giraffe', c: 'Toys "R" Us bankrupt 2017. Geoffrey se vrací v 2019 jako WHSmith mascot. Klasika 70s/80s/90s. Generační dětství.' },
+        { q: 'Jaký reklamní maskot Planters Peanuts (od 1916) je arašíd v cylindru a monoklu?', a: 'Mr. Peanut', c: 'Černobílá éra reklamy. Pak comeback do 21. století. Hrobový kult v 2020 — "umřel" v Super Bowl reklamě 2020.' },
+        { q: 'Jaký reklamní maskot Procter & Gamble čistícího prostředku je holohlavý chlap se zlatým náušnicí?', a: 'Mr. Clean', c: '1957 launch. "Mr. Clean Magic Eraser." Naval persona. Žádný kontroverzní postoj. Universal cleaning maskot.' },
+        { q: 'Jaký kontroverzní reklamní maskot pancake mixu, který Quaker Oats stáhl v 2020 kvůli rasistickým konotacím?', a: 'Aunt Jemima', c: 'Od 1889. Stáhli 2020 po George Floyd protests. Přejmenováno na Pearl Milling Company. Reklamní historie rasismu.' },
+        { q: 'Jaký kontroverzní reklamní maskot rýže, který Mars Inc. stáhl v 2020 kvůli rasistickým konotacím?', a: 'Uncle Ben', c: 'Od 1946. Stáhli 2020. Přejmenováno na "Ben\'s Original." Stejná vlna corporate self-reflection.' },
+        { q: 'Jaký reklamní maskot Quaker Oats je quaker (Kvaker) v černém klobouku — od 1877?', a: 'Quaker Oats man (Larry)', c: 'Mírotvorný quakerství. Healthy breakfast brand. Quaker jako symbol počestnosti. 150+ let nezměněný.' },
+        { q: 'Jaký reklamní maskot Anheuser-Busch (Bud Light, 80s) byl bílý buldok s černými skvrnami a slunečními brýlemi?', a: 'Spuds MacKenzie', c: 'Bud Light maskot 1987-1989. "Original Party Animal." Pak protests proti alcohol marketing children. Spuds umřela.' },
+        { q: 'Jaký kontroverzní reklamní maskot R.J. Reynolds Tobacco (cigaretky Camel) — kreslený velbloud v sako?', a: 'Joe Camel', c: 'Od 1987. Příliš atraktivní pro děti (studie 1991). Stáhli 1997 po vládním tlaku. Reklamní historie corporate manipulation.' }
+      ],
+      bonus: { q: 'Jaký reklamní maskot Alka-Seltzer (60s+) je malá postavička z léku — slogan "Plop plop fizz fizz"?', a: 'Speedy Alka-Seltzer', c: 'Od 1953. "Speedy Disney" zaměstnanec původně. "Plop, plop, fizz, fizz, oh what a relief it is!" 50s/60s reklama poetry.' }
+    },
+    /* V2 alt — Auto slogany */
+    {
+      questions: [
+        { q: 'Doplň slogan Chevrolet (od 50s): "See the ___ in Your Chevrolet"', a: 'USA', c: '"See the USA in your Chevrolet." Dinah Shore zpívala v reklamě. American post-war optimism. Pak Chevy Sandinista.' },
+        { q: 'Doplň slogan Volvo (od 70s): "Volvo for ___"', a: 'Life', c: 'Bezpečnost first. Volvo jako symbol švédské funkcionality. Pak luxury rebranding (XC90, S90). Pre-electric era.' },
+        { q: 'Doplň slogan Saab (00s): "Born from ___"', a: 'Jets', c: '"Born from Jets." Letectví dědictví (Saab dělali letadla). Pak General Motors koupil, pak Saab bankruptcy 2011. Sad end.' },
+        { q: 'Doplň slogan Volkswagen Golf (90s): "Drivers ___"', a: 'Wanted', c: '"Drivers Wanted." Volkswagen USA campaign 1995-2007. Generační VW Golf nostalgia.' },
+        { q: 'Doplň slogan Mitsubishi: "Wake Up and ___"', a: 'Drive', c: '"Wake Up and Drive." Mitsubishi 00s campaign. Pak Mitsubishi téměř bankrupted 2001. Nissan-Renault-Mitsubishi aliance.' },
+        { q: 'Doplň slogan Nissan: "Innovation That ___"', a: 'Excites', c: 'Slogan od 2013. Pak Carlos Ghosn skandál 2018, escape v krabici 2019. Innovation indeed.' },
+        { q: 'Doplň slogan Lexus (od 80s): "The Relentless Pursuit of ___"', a: 'Perfection', c: 'Toyota luxury brand. Slogan "The Relentless Pursuit of Perfection." Pak změnili na "Experience Amazing" (2017).' },
+        { q: 'Doplň slogan Infiniti: "Inspired ___"', a: 'Performance', c: 'Nissan luxury brand. Pak skomíral. Pak rebranding "Empower the Drive" (2021). Méně známý než Lexus.' }
+      ],
+      bonus: { q: 'Doplň francouzský slogan Citroën: "Créative ___"', a: 'Technologie', c: '"Créative Technologie." Citroën DS launch. Pak slogan šel z auta na celý brand. Francouzský engineering pride.' }
+    },
+    /* V3 alt — Sportovní brand */
+    {
+      questions: [
+        { q: 'Doplň slogan Reebok z 1988: "Reeboks Let U.B. ___"', a: 'U', c: '"Reeboks let U.B.U." Slogan, který nikdo neměl ve výslovnosti. Pak Reebok ztratil válku Nike. Adidas group teď.' },
+        { q: 'Doplň starý slogan Nike (před "Just Do It"): "There Is No ___ Line"', a: 'Finish', c: '"There Is No Finish Line." Slogan z 1977 — staný Nike core message. Pak "Just Do It" (1988) ho překryl.' },
+        { q: 'Doplň slogan Adidas: "Adidas is ___"', a: 'All In', c: '"Adidas is all in." Slogan 2011+. Messi, Beckham ambassadors. Konkurence pro Nike marketing.' },
+        { q: 'Doplň slogan Puma: "After Hours ___"', a: 'Athlete', c: '"After Hours Athlete." Slogan zaměřený na nightlife crowd. Klubová atletika. Puma jako lifestyle brand.' },
+        { q: 'Doplň slogan Under Armour: "Protect This ___"', a: 'House', c: '"Protect This House." Football team mentality. Kevin Plank Maryland football player vytvořil brand. Underarmpit dyl nepatřil.' },
+        { q: 'Doplň slogan Fila: "F Is for ___"', a: 'Fashion', c: '"F is for Fashion." Fila comeback v 2010s jako vintage streetwear. Pak fanouškům 90s svalo zub.' },
+        { q: 'Doplň slogan Lacoste: "Life Is a Beautiful ___"', a: 'Sport', c: '"Life is a beautiful sport." Krokodýl logo. Tennis brand → casual luxury. René Lacoste = "The Crocodile" tenista.' },
+        { q: 'Doplň slogan Diadora: "Eyes Wide ___"', a: 'Open', c: '"Eyes Wide Open." Diadora — italský sport brand. Soccer, tennis, retro. Méně známý než Nike/Adidas, ale stylový.' }
+      ],
+      bonus: { q: 'Doplň slogan Kappa (italský sport brand): "He Who Loves Me, ___ Me"', a: 'Follows', c: '"He who loves me, follows me." Charakteristické "Omini" logo — dva sedící nazí lidé. Kontroverzní, paměť-stickí, ikonický.' }
+    },
+    /* V4 alt — Tech slogany */
+    {
+      questions: [
+        { q: 'Doplň slogan Hewlett-Packard: "HP ___"', a: 'Invent', c: '"HP Invent" slogan 1998-2008. Pak HP split — HP Inc. + Hewlett Packard Enterprise. Slogan stáhli.' },
+        { q: 'Doplň slogan Dell z 2000 reklam: "Dude, You\'re Getting a ___"', a: 'Dell', c: 'Steven Talley jako "Steven" v Dell reklamě. Stoner-style character. Pak Steven cancelled po drug arrest. Dell konec slogan.' },
+        { q: 'Doplň slogan Sony: "Make.___"', a: 'Believe', c: '"make.believe." 2009-2014 slogan. Sony jako entertainment + electronics konvergence. Pak Sony stáhla, používali "Be Moved."' },
+        { q: 'Doplň slogan Samsung: "Inspire the World, Create the ___"', a: 'Future', c: '"Inspire the World, Create the Future." Samsung corporate slogan 2010. Pak "Do What You Can\'t" (2016).' },
+        { q: 'Doplň slogan Panasonic: "Ideas for ___"', a: 'Life', c: '"Ideas for life." Panasonic 2008+. Pak změnili na "A Better Life, A Better World." Japanese electronics consistency.' },
+        { q: 'Doplň slogan LG: "Life\'s ___"', a: 'Good', c: '"Life\'s Good." Slogan LG od 1995. Pak loga, písmena. Korejská electronics dominance. "Lucky GoldStar" = LG.' },
+        { q: 'Doplň slogan Philips: "Sense and ___"', a: 'Simplicity', c: '"Sense and Simplicity." Philips slogan 2004-2013. Pak "Innovation and You" (2013). Holandský engineering pride.' },
+        { q: 'Doplň slogan Motorola: "Hello ___"', a: 'Moto', c: '"Hello Moto." Motorola Razr launch slogan 2004. Generační flip phone obsession. Pak Motorola sold to Google, then Lenovo.' }
+      ],
+      bonus: { q: 'Doplň slogan Cisco: "The Human ___"', a: 'Network', c: '"The Human Network." Cisco Systems slogan 2006-2012. Networking giant. Pak rebranding "Tomorrow Starts Here" (2013).' }
+    }
+  ],
+
+  maskoti: [
+    /* V0 alt — Český večerníček */
+    {
+      questions: [
+        { q: 'Jak se jmenovala česká loutková dvojice (Josef Skupa) — moudrý a hloupý — populární od 1920?', a: 'Spejbl a Hurvínek', c: 'Spejbl (otec, blbeček). Hurvínek (syn, chytrák). Josef Skupa, pak Miloš Kirschner. Loutková legenda 100 let.' },
+        { q: 'Jak se jmenoval česky animovaný seriál o žížalkách (Studio Bratří v triku 90s)?', a: 'Žížaláci', c: 'Adolf Born, Miloš Macourek. Žížaly žijící pod zemí. Pro děti, ale s humorem pro dospělé. Klasika ČT.' },
+        { q: 'Jak se jmenovali dva malí skřítkové — bratři, kteří žili v houbovém domku ve Studio Bratří v triku seriálu?', a: 'Křemílek a Vochomůrka', c: 'Václav Čtvrtek autor (Rumcajs, Vodník Česílko taky). Pohádkové bytosti, lesní humor. Klasika 70s/80s/90s.' },
+        { q: 'Jak se jmenoval malý zelený vodník z české večerníčky (Václav Čtvrtek), žije v rybníce a sbírá dušičky?', a: 'Rákosníček', c: 'Pohádkový "good vodník" — pomáhá lidem. Václav Čtvrtek. Zdeněk Smetana animace. Generační favorit.' },
+        { q: 'Jak se jmenovali jezevec Hrabě a vrabec Špunt — dvojice z české večerníčky o lese (Miloš Macourek)?', a: 'Štaflík a Špagetka (Hrabě a Špunt — různé seriály)', c: 'Pes a kočka kresleného seriálu Studio Bratří v triku. Honza Tůma. Generační dětská klasika.' },
+        { q: 'Jak se jmenoval slavný pták z české večerníčky — lesní pták, kamarád lišky Ryšky?', a: 'Pták Ohnivák', c: 'Studio Bratří v triku. Klasická česká animovaná pohádka. Magické bytosti, mladý hrdina, lesní svět.' },
+        { q: 'Jak se jmenoval syn loupežníka Rumcajse v české večerníčce (Václav Čtvrtek)?', a: 'Cipísek', c: 'Mladý lesní loupežník. Manka maminka, Rumcajs otec. Klasická česká pohádková rodina. Generační kultura.' },
+        { q: 'Jak se jmenovala manželka loupežníka Rumcajse v české večerníčce (Václav Čtvrtek)?', a: 'Manka', c: 'Loupežnická matka. Lesní život v Řáholci. Čeká doma, vaří, vychovává Cipíska. Tradiční pohádková rodina.' }
+      ],
+      bonus: { q: 'Jak se jmenoval slavný loupežník z české večerníčky (Václav Čtvrtek), žije s manželkou Mankou a synem Cipískem v lese Řáholec?', a: 'Rumcajs', c: 'Václav Čtvrtek autor. Loupežník z donucení (vyhozen z města). Klasická česká pohádková ikona. Jičínsky les Řáholec.' }
+    },
+    /* V1 alt — Disney */
+    {
+      questions: [
+        { q: 'Jak se jmenuje hlavní hrdina Disney filmu Aladdin (1992) — pouliční zloděj z Agraby s opičkou Abu?', a: 'Aladdin', c: 'Robin Williams jako Džin. Princezna Jasmine. Disney Renaissance vrchol. Pak živá akce verze 2019 (Will Smith).' },
+        { q: 'Jak se jmenuje hlavní hrdina Disney filmu Hercules (1997) — syn Dia, kterého unesl Hades?', a: 'Hercules', c: 'James Woods jako Hades. "Zero to Hero." Disney pop-řecká mytologie. Megara láska, Phil mentor.' },
+        { q: 'Jak se jmenuje hlavní hrdinka Disney filmu Mulan (1998) — čínská dívka, která se vydává za muže?', a: 'Mulan (Fa Mulan)', c: 'První "non-princess" Disney heroína. Eddie Murphy jako dračí poradce Mushu. Pak live action 2020 (kontroverze China).' },
+        { q: 'Jak se jmenuje hlavní hrdinka Disney filmu Pocahontas (1995) — indiánská princezna v Severní Americe?', a: 'Pocahontas', c: '"Colors of the Wind." Mel Gibson jako John Smith. Historical accuracy: zero. Klasická Disney film 90s.' },
+        { q: 'Jak se jmenuje hlavní hrdina Disney filmu Tarzan (1999) — anglický muž vyrostlý s gorilami?', a: 'Tarzan', c: 'Edgar Rice Burroughs original. Phil Collins soundtrack. Animace + 3D pozadí (Deep Canvas). Jane (Minnie Driver).' },
+        { q: 'Jak se jmenuje malá havajská holčička z Disney filmu Lilo & Stitch (2002)?', a: 'Lilo', c: 'Lilo Pelekai. Sirotek vychovávaná sestrou Nani. Adoptuje "psa" Stitch (vlastně Experiment 626 mimozemšťan).' },
+        { q: 'Jak se jmenuje hlavní hrdina Disney filmu The Hunchback of Notre Dame (1996) — hrbáč z pařížské katedrály?', a: 'Quasimodo', c: 'Notre Dame zvoník. Esmeralda romance. Disney attempt at "darker" content. Underrated klasika 90s.' },
+        { q: 'Jak se jmenuje cikánka, která pomáhá Quasimodovi v Disney filmu The Hunchback of Notre Dame (1996)?', a: 'Esmeralda', c: 'Demi Moore voice. Cikánská tanečnice. Pak prokletí Disney — méně merch než ostatní princezny.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný modrý duch z Disney filmu Aladdin (1992) — Robin Williams improvization?', a: 'Genie (Džin)', c: 'Robin Williams ad-libbed half the dialogue. Pak konflikt s Disney over marketing. Robin Williams cancelled Aladdin 2 sequel. Pak smířili.' }
+    },
+    /* V2 alt — Anime */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavný anime/manga seriál o dívce, která sbírá magické karty — CLAMP anime 1998-2000?', a: 'Cardcaptor Sakura', c: 'Sakura Kinomoto. Tomoyo, Kero. Magic transformations. Generační magical girl klasika 90s.' },
+        { q: 'Jak se jmenuje slavný anime/manga seriál o malém detektivovi — Gosho Aoyama (od 1996)?', a: 'Detective Conan (Case Closed)', c: 'Shinichi Kudo → Conan Edogawa (zmenšený). Nejdéle běžící anime. 1000+ epizod. Stálice japonské popkultury.' },
+        { q: 'Jak se jmenuje slavný anime/manga seriál o pirátu Luffy v vesmíru? Wait — na moři, hledá One Piece?', a: 'One Piece', c: 'Eiichiro Oda od 1997. 1100+ kapitol manga. Nejprodávanější manga všech dob. Luffy, Zoro, Sanji, Nami, Robin, Chopper.' },
+        { q: 'Jak se jmenuje slavný anime/manga seriál o duchovém soulu shinigami Ichigo Kurosaki — Tite Kubo?', a: 'Bleach', c: '"Bleach" název pro "vybělit" — Kurosaki "černá jagoda" → vybělit na bílou. Shonen Jump klasika 00s/10s.' },
+        { q: 'Jak se jmenuje slavný anime/manga seriál o blocku Death Note — psycho thriller z roku 2003?', a: 'Death Note', c: 'Tsugumi Ohba. Light Yagami (Kira) vs. L. Iconické "shinigami napsali jméno v notesu = smrt." Generační intelligent anime.' },
+        { q: 'Jak se jmenuje slavný anime/manga seriál o alchymii — bratří Elricovi, ze 2001?', a: 'Fullmetal Alchemist', c: 'Hiromu Arakawa. Edward a Alphonse Elric. Hledají Filosofův kámen. Dvě anime adaptace (2003, 2009). Mature shonen.' },
+        { q: 'Jak se jmenuje slavný anime/manga seriál o samurajovi a polopsovi (poloduch) — Rumiko Takahashi 1996?', a: 'Inuyasha', c: 'Kagome Higurashi cestuje feudálním Japonskem. Inuyasha — polopes-poloduch. Generational fantasy anime 00s.' },
+        { q: 'Jak se jmenuje slavný anime film 1995 (a TV seriál 1998) o vesmírném lovci odměn Spike Spiegel?', a: 'Cowboy Bebop', c: 'Shinichirō Watanabe. Jazz soundtrack Yoko Kanno. "See You Space Cowboy." Generační kult anime — definující 90s genre.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný anime/manga z 1952 — Osamu Tezuka, robotický kluk v atomovém věku?', a: 'Astro Boy (Tetsuwan Atomu)', c: 'Tezuka = "God of Manga." Astro Boy = jeden z prvních anime, Black Jack, Phoenix, Buddha. Klasika japonského kreslení.' }
+    },
+    /* V3 alt — Looney Tunes */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavný kovboj-prdelka z Looney Tunes — krátký, vysoké boty, dva pistolemi, agresivní?', a: 'Yosemite Sam', c: '"I hates that rabbit!" Konkurent Bugse Bunnyho. Friz Freleng vytvořil 1945. Klasický grotesque cowboy archetype.' },
+        { q: 'Jak se jmenuje slavný lovec z Looney Tunes — plešatý, koktá "wabbit" místo "rabbit"?', a: 'Elmer Fudd', c: '"Be vewy vewy quiet, I\'m hunting wabbits!" Klasický komediální archetype. Loser-hunter. Pak v "Space Jam" (1996).' },
+        { q: 'Jak se jmenuje slavná myš z Looney Tunes — "nejrychlejší myš v Mexiku"?', a: 'Speedy Gonzales', c: '"Ándale! Ándale!" Bowl culture appropriation debata. 2002 stažený, 2020 návrat. Lin-Manuel Miranda obhajoval ho.' },
+        { q: 'Jak se jmenuje slavný šedý ďábel z Looney Tunes — pochází z Tasmánie, jí všechno?', a: 'Tasmanian Devil (Taz)', c: 'Spinning tornado. Crazy speech. "Taz-Mania" spin-off seriál. Australská zvířecí postavička, americká animace.' },
+        { q: 'Jak se jmenuje slavná babička z Looney Tunes — drobná, šedovlasá, vlastní Tweetyho?', a: 'Granny', c: 'Tweetyho ochranitelka. Bea Benaderet voice. Sweet old lady, but protective. Klasická postavička Sylvester-Tweety dynamics.' },
+        { q: 'Jak se jmenuje slavný supinec z Looney Tunes — velký pták s "krčním hlasem"?', a: 'Beaky Buzzard', c: 'Velký pták s "Goofy" hlasem. Klasický bird character. Méně známý než ostatní, ale kult mezi Looney Tunes fanoušky.' },
+        { q: 'Jak se jmenuje slavná čarodějnice z Looney Tunes — zelená pleť, dlouhý nos, klasický stereotyp?', a: 'Witch Hazel', c: 'Halloween episodes. Comedy witch archetype. Disney má vlastní Witch Hazel z Trick or Treat. Animation history overlap.' },
+        { q: 'Jak se jmenují dvě malé myši z Looney Tunes (Friz Freleng) — Henry & Bert, nebo "Hubie & ___"?', a: 'Bertie (Hubie & Bertie)', c: 'Brooklynští dva malí ošklívci. Plánovači — vždy proti kočičce. Méně známé, ale kultovní.' }
+      ],
+      bonus: { q: 'Jak se jmenuje slavný malý jestřáb z Looney Tunes — chce sníst Foghorn Leghorn?', a: 'Henery Hawk', c: 'Malý kuřátkový jestřáb. Bojuje s Foghorn Leghorn. "Are you a chicken?" Klasická 50s komediální dynamika.' }
+    },
+    /* V4 alt — Cartoon Network 90s */
+    {
+      questions: [
+        { q: 'Jak se jmenuje slavná Warner Bros animovaná série 90s — Yakko, Wakko a Dot vyhnutí studia?', a: 'Animaniacs', c: '"It\'s the Animaniacs!" Steven Spielberg producer. Klasika 90s Warner Bros animation. Comeback 2020 (Hulu).' },
+        { q: 'Jak se jmenuje spin-off Animaniacs s dvěma laboratorními myšmi — "pokusit se ovládnout svět"?', a: 'Pinky and the Brain', c: '"Gee, Brain, what do you want to do tonight?" "Pinky, the same thing we do every night..." Inteligentní humor pro děti.' },
+        { q: 'Jak se jmenuje slavná Warner Bros animovaná série 90s — mladá verze Bugs Bunny a kamarádi v Acme Looniversity?', a: 'Tiny Toon Adventures', c: 'Buster Bunny, Babs Bunny, Plucky Duck, Hamton Pig. Cute version of Looney Tunes. 90s ráno před školou.' },
+        { q: 'Jak se jmenuje slavná Warner Bros animovaná série 1998-2000 o dětech, které si hrají na historii — Animaniacs spinoff?', a: 'Histeria!', c: 'Edukační animovaná série. Méně známá než Animaniacs. Kraťoučce trvala. Steven Spielberg consortium.' },
+        { q: 'Jak se jmenuje slavná Warner Bros animovaná série 1995-1997 — modrý hrdina s kraťasy, "Faltermeyer\'s Beverly Hills Cop"?', a: 'Freakazoid!', c: 'Bruce Timm + Paul Dini. Bizarní humor. Kult mezi 90s kids. Krátká produkce, dlouhá vzpomínka.' },
+        { q: 'Jak se jmenuje slavná kanadská 3D animovaná série 1994-2001 — postavičky uvnitř počítače?', a: 'ReBoot', c: 'První 3D CGI animovaný seriál. Mainframe Entertainment. Pre-Pixar 3D. Generační sci-fi.' },
+        { q: 'Jak se jmenuje slavná Hasbro animovaná série 1996-1999 — Maximals (good) vs. Predacons (bad) v primitivní Zemi?', a: 'Beast Wars (Transformers: Beast Wars)', c: 'Optimus Primal, Megatron. Transformers reboot do 3D CGI. Méně populární než G1, ale kvalitnější.' },
+        { q: 'Jak se jmenuje slavná Fox/UPN animovaná série 1992-1997 — adaptace Marvel komiksů s X-Men týmem?', a: 'X-Men: The Animated Series', c: 'Wolverine, Cyclops, Storm, Jean Grey. Definující X-Men animovaný adaptace. Pak X-Men \'97 (2024) — comeback po 30 letech.' }
+      ],
+      bonus: { q: 'Jak se jmenovala americká animovaná série 80s/90s o vesmírném kovboji s laserovým koněm "Thirty Thirty"?', a: 'BraveStarr', c: 'Filmation Productions. Western + sci-fi. Marshal BraveStarr, Tex Hex. Krátká kult mezi nostalgickými 80s kids.' }
+    }
+  ]
+};
+
+/* =================================================================
    STAV HRY
    ================================================================= */
 /* Paleta barev pro hráče — používá se v pořadí při přidání */
@@ -2256,7 +2993,9 @@ let state = {
   reviewSubPhase: 'reminder',
   reviewCountdown: 3,
   reviewTimerId: null,
-  questionCount: 8                          // počet běžných otázek v sadě (bonus se přidává navíc); volitelné 3/5/8
+  questionCount: 8,                         // počet běžných otázek v sadě (bonus se přidává navíc); volitelné 3/5/8
+  activeQuestions: [],                      // konkrétní 8 otázek z varianty (může být set A nebo B — losováno)
+  activeBonus: null                         // konkrétní bonus z varianty (set A nebo B)
 };
 
 const COUNTDOWN_SECONDS = 3;
@@ -2384,8 +3123,7 @@ function showVariantPicker(categoryId) {
 
   // Pokud je jen jedna sada, přeskoč picker a rovnou hraj
   if (cat.variants.length === 1) {
-    state.currentVariantIndex = 0;
-    startCategory(categoryId);
+    selectVariant(0);
     return;
   }
 
@@ -2412,6 +3150,23 @@ function showVariantPicker(categoryId) {
 
 function selectVariant(idx) {
   state.currentVariantIndex = idx;
+  const cat = getCategory(state.currentCategoryId);
+  const variant = cat && cat.variants ? cat.variants[idx] : null;
+
+  // Pokud má varianta alternativní sadu (set B v ALT_POOLS), náhodně vyber A nebo B.
+  // Při opakovaném výběru stejné varianty se hra může lišit.
+  const altPool = (typeof ALT_POOLS !== 'undefined' && ALT_POOLS[state.currentCategoryId])
+    ? ALT_POOLS[state.currentCategoryId][idx]
+    : null;
+
+  if (altPool && altPool.questions && altPool.bonus && Math.random() < 0.5) {
+    state.activeQuestions = altPool.questions;
+    state.activeBonus = altPool.bonus;
+  } else if (variant) {
+    state.activeQuestions = variant.questions || [];
+    state.activeBonus = variant.bonus || null;
+  }
+
   startCategory(state.currentCategoryId);
 }
 
@@ -2557,7 +3312,7 @@ function renderQuestionScreen() {
 
 /* ----- Fáze 1: SBĚR — postupně 9 otázek bez odpovědí ----- */
 function renderCollectPhase(body, variant, isBonus) {
-  const q = isBonus ? variant.bonus : variant.questions[state.currentQuestionIndex];
+  const q = isBonus ? state.activeBonus : state.activeQuestions[state.currentQuestionIndex];
   const points = isBonus ? BONUS_POINTS : POINT_VALUES[state.currentQuestionIndex];
   const isLast = isBonus; // bonusová otázka je vždy poslední (9.)
 
@@ -2587,7 +3342,7 @@ function renderCollectPhase(body, variant, isBonus) {
    - 'reveal'   = ukáže odpověď + komentář + sloupce Petr/Martina pro označení
    --------------------------------------------------------------------------- */
 function renderReviewPhase(body, variant, isBonus) {
-  const q = isBonus ? variant.bonus : variant.questions[state.currentQuestionIndex];
+  const q = isBonus ? state.activeBonus : state.activeQuestions[state.currentQuestionIndex];
   const points = isBonus ? BONUS_POINTS : POINT_VALUES[state.currentQuestionIndex];
 
   const banner = isBonus
@@ -2871,6 +3626,8 @@ function resetGame() {
   state.reviewSubPhase = 'reminder';
   state.reviewCountdown = COUNTDOWN_SECONDS;
   state.reviewTimerId = null;
+  state.activeQuestions = [];
+  state.activeBonus = null;
   renderSetup();
 }
 
