@@ -2280,11 +2280,11 @@ function showFinished() {
 }
 
 function getRating(score) {
-  // Max za 6 kategorií = 16 500 b. na jednoho hráče
-  if (score <= 3500)  return 'Vy jste 90. léta strávili kde? V cizině?';
-  if (score <= 7000)  return 'Solidně, ale Nokia byste v životě neopravili.';
-  if (score <= 11000) return 'Vy jste tu dobu fakt žili.';
-  if (score <= 14500) return 'Klobouk dolů, vy jste jí přímo dýchali.';
+  // Max za 10 kategorií = 27 500 b. na jednoho hráče
+  if (score <= 5500)  return 'Vy jste 90. léta strávili kde? V cizině?';
+  if (score <= 11000) return 'Solidně, ale Nokia byste v životě neopravili.';
+  if (score <= 18000) return 'Vy jste tu dobu fakt žili.';
+  if (score <= 23000) return 'Klobouk dolů, vy jste jí přímo dýchali.';
   return 'Vy JSTE 90s. Můžete jít učit na vysokou.';
 }
 
